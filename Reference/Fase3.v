@@ -369,7 +369,7 @@ wire RF_enable;
 wire B_instr;
 //////////////////
 wire [31:0] PC_4;//adder output
-wire [31:0] PC = 32'b00000000000000000000000000000000;//register PC output
+wire [31:0] PC;//register PC output
 reg Ld = 1'b1;//always 1 for register
 reg CLK;
 reg CLR;
