@@ -1,0 +1,22 @@
+module MUX_16x1 (output reg [31:0] P, 
+	input [31:0] Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15, input [3:0] R);
+always @ (R, Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15)
+case (R)
+4'b0000: P = Q0;
+4'b0001: P = Q1;
+4'b0010: P = Q2;
+4'b0011: P = Q3;
+4'b0100: P = Q4;
+4'b0101: P = Q5;
+4'b0110: P = Q6;
+4'b0111: P = Q7;
+4'b1000: P = Q8;
+4'b1001: P = Q9;
+4'b1010: P = Q10;
+4'b1011: P = Q11;
+4'b1100: P = Q12;
+4'b1101: P = Q13;
+4'b1110: P = Q14;
+4'b1111: P = Q15;
+endcase
+endmodule

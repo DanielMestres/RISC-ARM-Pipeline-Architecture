@@ -1,0 +1,45 @@
+`include "Decoder_4x16.v.txt"
+`include "MUX_2x1_(32_bus).v.txt"
+`include "Register_(32).v.txt"
+`include "Register_PC_(32).v.txt"
+`include "MUX_16x1_(32_bus).v.txt"
+`include "PC_Incrementer_(32).v.txt"
+
+module Register_File (output [31:0] PA, PB, PC, PC_out,
+	input [31:0] PW, PC_in, PC_4, input [3:0] RA, RB, RC, RW, input PC_en, BL_true, LE, Clk);
+
+	wire R14_in, R14_Ld;
+	wire [15:0] E;
+	wire [31:0] Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15;
+
+	Decoder_4x16 Decoder (E, RW, LE);
+	MUX_2x1 D_R14 (R14_in, PW, PC_4, BL_true);
+	MUX_2x1 Ld_R14 (R14_Ld, E[14], BL_true, BL_true);
+	Register_32 R0 (Q0, PW, E[0], Clk);
+	Register_32 R1 (Q1, PW, E[1], Clk);
+	Register_32 R2 (Q2, PW, E[2], Clk);
+	Register_32 R3 (Q3, PW, E[3], Clk);
+	Register_32 R4 (Q4, PW, E[4], Clk);
+	Register_32 R5 (Q5, PW, E[5], Clk);
+	Register_32 R6 (Q6, PW, E[6], Clk);
+	Register_32 R7 (Q7, PW, E[7], Clk);
+	Register_32 R8 (Q8, PW, E[8], Clk);
+	Register_32 R9 (Q9, PW, E[9], Clk);
+	Register_32 R10 (Q10, PW, E[10], Clk);
+	Register_32 R11 (Q11, PW, E[11], Clk);
+	Register_32 R12 (Q12, PW, E[12], Clk);
+	Register_32 R13 (Q13, PW, E[13], Clk);
+	Register_32 R14 (Q14, R14_in, R14_Ld, Clk);
+	Register_PC R15 (PC_out, PC_in, PC_en, Clk);
+	MUX_16x1 A (PA, Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, PC_out, RA);
+	MUX_16x1 B (PB, Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, PC_out, RB);
+	MUX_16x1 C (PC, Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, PC_out, RC);
+//PC_Incrementer_32 PC_Increment (PC_4, PC_out);
+//MUX_2x1 In_PC (PC_in, PC_4, TA, Cond_true);
+/*
+For correct functionality of Register File values of TA and Cond_true
+have to be manually input since the incrementer shouldn't exist within
+the Register File and is supposed to receive its input from the Condition Handler.
+*/
+
+endmodule
