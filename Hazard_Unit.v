@@ -1,3 +1,0 @@
-module Hazard_Unit (
-
-);

@@ -2,4 +2,4 @@
 // Create clk here
 // Takes no input nor produces any outputs
 
-module main;
+module Phase_3;

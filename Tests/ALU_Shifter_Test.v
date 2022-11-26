@@ -12,7 +12,7 @@ module ALU_Shifter_Test();
 	reg carry_input;
 	reg [3:0] opcode_input;
 
-	wire [3:0] flags_output;	// V = [0], C = [1], Z = [2], N = [3]
+	wire [3:0] flags_output;	// V = [3], C = [2], Z = [1], N = [0]
 	wire [31:0] alu_output;
 
 	reg [32:0] op;
@@ -42,7 +42,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "EOR";
 		opcode_input = 4'b0001;
@@ -51,7 +51,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		// TEST CASE WITH / WITHOUT OVERFLOW
 		op = "SUB";
@@ -61,13 +61,13 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "*SUB";
 		a_input = 32'b01100000011100000100011011110100;
 		b_input = 32'b11000100010000011000001101110100;
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		// TEST CASE WITH / WITHOUT OVERFLOW
 		op = "RSB";
@@ -77,13 +77,13 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "*RSB";
 		a_input = 32'b01100110011100100100011011110101;
 		b_input = 32'b11010100010000011001001101110100;
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		// TEST CASE WITH / WITHOUT OVERFLOW
 		op = "ADD";
@@ -93,13 +93,13 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "*ADD";
 		a_input = 32'b10000000000000000110000101110010;
 		b_input = 32'b10000000001100010000001100110011;
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		// TEST CASE WITH / WITHOUT OVERFLOW
 		op = "ADC";
@@ -109,13 +109,13 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "*ADC";
 		a_input =32'b01111111111111110111111111111111;
 		b_input =32'b01111111111011111111111111111111;
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		// TEST CASE WITH / WITHOUT OVERFLOW
 		op = "SBC";
@@ -125,13 +125,13 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "*SBC";
 		a_input = 32'b01100000011100000100011011110100;
 		b_input = 32'b11000100010000011000001101110100;
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "RSC";
 		opcode_input = 4'b0111;
@@ -140,13 +140,13 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "*RSC";
 		b_input = 32'b01100000011100000100011011110100;
 		a_input = 32'b11000100010000011000001101110100;
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "TST";
 		opcode_input = 4'b1000;
@@ -155,7 +155,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "TEQ";
 		opcode_input = 4'b1001;
@@ -164,7 +164,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "CMP";
 		opcode_input = 4'b1010;
@@ -173,7 +173,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "CMN";
 		opcode_input = 4'b1011;
@@ -182,7 +182,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "ORR";
 		opcode_input = 4'b1100;
@@ -191,7 +191,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "MOV";
 		opcode_input = 4'b1101;
@@ -200,7 +200,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "BIC";
 		opcode_input = 4'b1110;
@@ -209,7 +209,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		op = "MVN";
 		opcode_input = 4'b1111;
@@ -218,7 +218,7 @@ module ALU_Shifter_Test();
 		carry_input = 1'b0;
 
 		#100;	// Specifies simulation time
-		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[0], flags_output[1], flags_output[2], flags_output[3], a_input, b_input, alu_output);
+		$display("%b %s %b %b %b %b %b %b %b\n	   %32d %32d %32d", opcode_input, op, a_input, b_input, alu_output, flags_output[3], flags_output[2], flags_output[1], flags_output[0], a_input, b_input, alu_output);
 
 		
 		// Shifter
