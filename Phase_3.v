@@ -4,7 +4,7 @@
 module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address);           
    reg[7:0] Mem[0:255]; //256 8-byte addresses
    
-    always @ (DataOut, Address) begin
+    always @ (Address) begin
                 // Instruction start at even, multiples of 4, addresses
                 if(Address % 4 == 0) begin           
                     DataOut = {Mem[Address],Mem[Address + 1], Mem[Address + 2], Mem[Address + 3]};  
@@ -14,7 +14,7 @@ module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address);
             end
 endmodule
 
-// PC register Module
+// PC register Module, <= is needed for synch issues
 module reg_PC(Q, PW, Ld, CLK, CLR);
     output reg [31:0] Q;    // Outout of Register 
     input [31:0] PW;        // Inputs of Register
@@ -154,7 +154,7 @@ module PC_4_Adder (
     input [31:0] PC
 );
     always@ (PC) begin
-        PC_4 = PC + 4;   // PC + 4
+        PC_4 <= PC + 4;
     end
 endmodule
 
@@ -211,10 +211,10 @@ module IFID_Register (
 
     always@ (posedge CLK) begin
         if(CLR) begin
-            CUnit_o = 32'b00000000000000000000000000000000;
+            CUnit_o <= 32'b00000000000000000000000000000000;
         end
         else begin
-            CUnit_o = Ins;
+            CUnit_o <= Ins;
         end
     end
 endmodule
@@ -243,23 +243,23 @@ module IDEX_Register (
 
 always@(posedge CLK) begin
         if(CLR) begin
-        Shift_o = 1'b0;
-        ALU_o = 4'b0000;
-        load_o = 1'b0;
-        S_o = 1'b0;
-        rf_o = 1'b0;
-        size_o = 1'b0;
-        enable_o = 1'b0;
-        rw_o = 1'b0;
+        Shift_o <= 1'b0;
+        ALU_o <= 4'b0000;
+        load_o <= 1'b0;
+        S_o <= 1'b0;
+        rf_o <= 1'b0;
+        size_o <= 1'b0;
+        enable_o <= 1'b0;
+        rw_o <= 1'b0;
         end else begin
-            Shift_o = Shift_i;
-            ALU_o = ALU_i;
-            load_o = load_i;
-            S_o = S_i;
-            rf_o = rf_i;
-            size_o = size_i;
-            enable_o = enable_i;
-            rw_o = rw_i;
+            Shift_o <= Shift_i;
+            ALU_o <= ALU_i;
+            load_o <= load_i;
+            S_o <= S_i;
+            rf_o <= rf_i;
+            size_o <= size_i;
+            enable_o <= enable_i;
+            rw_o <= rw_i;
         end
     end
 endmodule
@@ -281,17 +281,17 @@ module EXMEM_Register (
 );
     always@(posedge CLK) begin
         if(CLR) begin
-        load_o = 1'b0;
-        rf_o = 1'b0;
-        size_o = 1'b0;
-        enable_o = 1'b0;
-        rw_o = 1'b0;
+        load_o <= 1'b0;
+        rf_o <= 1'b0;
+        size_o <= 1'b0;
+        enable_o <= 1'b0;
+        rw_o <= 1'b0;
         end else begin
-            load_o = load_i;
-            rf_o = rf_i;
-            size_o = size_i;
-            enable_o = enable_i;
-            rw_o = rw_i;
+            load_o <= load_i;
+            rf_o <= rf_i;
+            size_o <= size_i;
+            enable_o <= enable_i;
+            rw_o <= rw_i;
         end
     end
 endmodule
@@ -308,11 +308,11 @@ module MEMWB_Register (
 
 always@(posedge CLK) begin
         if(CLR) begin
-            load_o = 1'b0;
-            rf_o = 1'b0;
+            load_o <= 1'b0;
+            rf_o <= 1'b0;
         end else begin
-            load_o = load_i;
-            rf_o = rf_i;
+            load_o <= load_i;
+            rf_o <= rf_i;
         end
     end
 endmodule
@@ -336,18 +336,59 @@ module Phase_3;
     wire [31:0] DataOut;
     wire [31:0] Out;
     //CU outputs
-    wire shift_imm;
-    wire [3:0] ALU_Op;
-    wire size;
-    wire enable;
-    wire rw;
-    wire Load_Inst;
-    wire change;
-    wire RF_enable;
-    wire B_instr;
-    //////////////////
+    wire shift_imm_ID;
+    wire [3:0] ALU_Op_ID;
+    wire size_ID;
+    wire enable_ID;
+    wire rw_ID;
+    wire Load_Inst_ID;
+    wire change_ID;
+    wire RF_enable_ID;
+    wire B_instr_ID;
+    ////////////////// IF outputs
+    wire shift_imm_IF;
+    wire [3:0] ALU_Op_IF;
+    wire size_IF;
+    wire enable_IF;
+    wire rw_IF;
+    wire Load_Inst_IF;
+    wire change_IF;
+    wire RF_enable_IF;
+    ////////////////// CU_MUx
+    wire shift_imm_CU;
+    wire [3:0]ALU_Op_CU;
+    wire size_CU;
+    wire enable_CU;
+    wire rw_CU;
+    wire Load_Inst_CU;
+    wire change_CU;
+    wire RF_enable_CU;
+    wire select_mux = 1'b0;
+    ////////////////// EX outputs
+
+    wire shift_imm_EX;
+    wire [3:0] ALU_Op_EX;
+    wire size_EX;
+    wire enable_EX;
+    wire rw_EX;
+    wire Load_Inst_EX;
+    wire change_EX;
+    wire RF_enable_EX;
+
+    ////////////////// MEM outs
+    wire size_MEM;
+    wire enable_MEM; 
+    wire rw_MEM;
+    wire Load_Inst_MEM;
+    wire RF_enable_MEM;
+
+    ////////////////// WB outs
+    wire Load_Inst_WB;
+    wire RF_enable_WB;
+
+    ////////////////////////
     wire [31:0] PC_4;//adder output
-    wire [31:0] PC;//register PC output
+    wire [31:0] PC; //= 32'b00000000000000000000000000000000;//register PC output
     reg Ld = 1'b1;//always 1 for register
     reg CLK;
     reg CLR;
@@ -370,11 +411,14 @@ module Phase_3;
     end 
     ///////////////////////////////////////////////////////////
 
-
-    IFID_Register if_id (Out, DataOut, CLK, CLR);
-    Control_Unit c_u (shift_imm,ALU_Op,size,enable,rw,Load_Inst,change,RF_enable,B_instr,Out);
     reg_PC PC_R(PC, PC_4, Ld, CLK, CLR);
     PC_4_Adder PC4(PC_4, PC);
+    IFID_Register if_id (Out, DataOut, CLK, CLR);
+    Control_Unit c_u (shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,change_CU,RF_enable_CU,B_instr_CU,Out);
+    Mux_CU c_u_mux(shift_imm_ID,ALU_Op_ID,size_ID,enable_ID,rw_ID,Load_Inst_ID,change_ID,RF_enable_ID,shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,change_CU,RF_enable_CU,select_mux);
+    IDEX_Register id_ex(shift_imm_EX,ALU_Op_EX,size_EX,enable_EX,rw_EX,Load_Inst_EX,change_EX,RF_enable_EX,shift_imm_ID,ALU_Op_ID,size_ID,enable_ID,rw_ID,Load_Inst_ID,change_ID,RF_enable_ID,CLK,CLR);
+    EXMEM_Register ex_mem(size_MEM,enable_MEM,rw_MEM,Load_Inst_MEM,RF_enable_MEM,size_EX,enable_EX,rw_EX,Load_Inst_EX,RF_enable_EX,CLK,CLR);
+    MEMWB_Register mem_wb(Load_Inst_WB,RF_enable_WB,Load_Inst_MEM,RF_enable_MEM,CLK,CLR);
 
 
     // Clk & Clr
@@ -395,8 +439,8 @@ module Phase_3;
     initial begin
         #5;
         $display("\n       Phase 3 Circuit       ");
-        $display ("\n      Address     PC+4   IFID_IN                           IFID_OUT                          C_U_OUT SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF B IDEX_IN");
-        $monitor("%d %d    %b  %b        | %b     %b   %b    %b      %b   %b    %b %b  %b       |", 
-                PC, PC_4, DataOut, Out,shift_imm,ALU_Op,size,enable,rw,Load_Inst,change,RF_enable,B_instr);
+        $display ("\n      Address     PC+4   IFID_IN                           IFID_OUT                          C_U_OUT SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF B IDEX SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF EXMEM SIZE EN_MEM RW LOAD RF MEMWB LOAD RF");
+        $monitor("%d %d    %b  %b        | %b     %b   %b    %b      %b   %b    %b %b  %b    | %b     %b   %b    %b      %b   %b    %b %b      | %b    %b      %b  %b    %b      | %b    %b", 
+                PC, PC_4, DataOut, Out,shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,change_CU,RF_enable_CU,B_instr_CU, shift_imm_EX,ALU_Op_EX,size_EX,enable_EX,rw_EX,Load_Inst_EX,change_EX,RF_enable_EX, size_MEM,enable_MEM,rw_MEM,Load_Inst_MEM,RF_enable_MEM, Load_Inst_WB,RF_enable_WB);
     end
 endmodule

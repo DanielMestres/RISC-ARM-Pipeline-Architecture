@@ -3,7 +3,7 @@ module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address, input Enable
                   
    reg[7:0] Mem[0:255]; //256 localizaciones of 8 bytes
    
-    always @ (DataOut, Address)  // Arreglar out
+    always @ (Address)  // Arreglar out
             begin                
                  DataOut = {Mem[Address],Mem[Address + 1], Mem[Address + 2], Mem[Address + 3]};                
             end
