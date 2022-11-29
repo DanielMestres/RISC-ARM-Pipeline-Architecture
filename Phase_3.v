@@ -122,7 +122,7 @@ module Phase_3();
         #1 CLR = ~CLR; // after two ticks, change value to 0
         
 
-        repeat(6) begin
+        repeat(11) begin
         #5;
         CLK = ~CLK;
         CLK = ~CLK;
