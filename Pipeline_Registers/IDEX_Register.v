@@ -21,23 +21,23 @@ module IDEX_Register (
 
 always@(posedge CLK) begin
         if(CLR) begin
-        Shift_o = 1'b0;
-        ALU_o = 4'b0000;
-        load_o = 1'b0;
-        S_o = 1'b0;
-        rf_o = 1'b0;
-        size_o = 1'b0;
-        enable_o = 1'b0;
-        rw_o = 1'b0;
+            Shift_o <= 1'b0;
+            ALU_o <= 4'b0000;
+            load_o <= 1'b0;
+            S_o <= 1'b0;
+            rf_o <= 1'b0;
+            size_o <= 1'b0;
+            enable_o <= 1'b0;
+            rw_o <= 1'b0;
         end else begin
-            Shift_o = Shift_i;
-            ALU_o = ALU_i;
-            load_o = load_i;
-            S_o = S_i;
-            rf_o = rf_i;
-            size_o = size_i;
-            enable_o = enable_i;
-            rw_o = rw_i;
+            Shift_o <= Shift_i;
+            ALU_o <= ALU_i;
+            load_o <= load_i;
+            S_o <= S_i;
+            rf_o <= rf_i;
+            size_o <= size_i;
+            enable_o <= enable_i;
+            rw_o <= rw_i;
         end
     end
 endmodule

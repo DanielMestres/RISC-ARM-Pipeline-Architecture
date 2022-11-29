@@ -15,17 +15,17 @@ module EXMEM_Register (
 
     always@(posedge CLK) begin
         if(CLR) begin
-        load_o = 1'b0;
-        rf_o = 1'b0;
-        size_o = 1'b0;
-        enable_o = 1'b0;
-        rw_o = 1'b0;
+            load_o <= 1'b0;
+            rf_o <= 1'b0;
+            size_o <= 1'b0;
+            enable_o <= 1'b0;
+            rw_o <= 1'b0;
         end else begin
-            load_o = load_i;
-            rf_o = rf_i;
-            size_o = size_i;
-            enable_o = enable_i;
-            rw_o = rw_i;
+            load_o <= load_i;
+            rf_o <= rf_i;
+            size_o <= size_i;
+            enable_o <= enable_i;
+            rw_o <= rw_i;
         end
     end
 endmodule

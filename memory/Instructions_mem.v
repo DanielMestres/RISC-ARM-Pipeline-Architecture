@@ -9,7 +9,7 @@ inst_ram256x8 ram1 (DataOut, Address, Enable);
 
 // Pre charge mem
 initial begin
-    fi = $fopen("PF1_Mendez_Muniz_Dylan_ramintr.txt","r");
+    fi = $fopen("ramintr.txt","r");
     Address = 32'b00000000000000000000000000000000;
     Enable = 1'b0;
         while (!$feof(fi))           
@@ -25,7 +25,7 @@ end
 
 initial begin
     #5;
-    fo = $fopen("PF1_Mendez_Muniz_Dylan_intr_output.txt");
+    fo = $fopen("intr_output.txt");
     Address = 32'b00000000000000000000000000000000;
     Enable = 1'b0;
     #1 repeat(4)

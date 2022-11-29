@@ -7,10 +7,10 @@ module IFID_Register (
 
     always@ (posedge CLK) begin
         if(CLR) begin
-            CUnit_o = 32'b00000000000000000000000000000000;
+            CUnit_o <= 32'b00000000000000000000000000000000;
         end
         else begin
-            CUnit_o = Ins;
+            CUnit_o <= Ins;
         end
     end
 endmodule

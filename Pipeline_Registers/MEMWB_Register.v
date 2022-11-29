@@ -9,11 +9,11 @@ module MEMWB_Register (
 
 always@(posedge CLK) begin
         if(CLR) begin
-            load_o = 1'b0;
-            rf_o = 1'b0;
+            load_o <= 1'b0;
+            rf_o <= 1'b0;
         end else begin
-            load_o = load_i;
-            rf_o = rf_i;
+            load_o <= load_i;
+            rf_o <= rf_i;
         end
     end
 endmodule
