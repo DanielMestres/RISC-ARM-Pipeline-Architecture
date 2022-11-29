@@ -1,43 +1,43 @@
 module IDEX_Register (
-    output reg  Shift_o,
-    output reg [3:0] ALU_o,
-    output reg size_o,
-    output reg enable_o,
-    output reg rw_o,
-    output reg load_o,
-    output reg S_o,
-    output reg rf_o,
-    input Shift_i,
-    input [3:0] ALU_i,
-    input size_i,
-    input enable_i,
-    input rw_i,
-    input load_i,
-    input S_i,
-    input rf_i,
+    output reg  Shift_Out,
+    output reg [3:0] ALU_Out,
+    output reg Size_Out,
+    output reg Enable_Out,
+    output reg rw_Out,
+    output reg Load_Out,
+    output reg S_Out,
+    output reg rf_Out,
+    input Shift_In,
+    input [3:0] ALU_In,
+    input Size_In,
+    input Enable_In,
+    input rw_In,
+    input Load_In,
+    input S_In,
+    input rf_In,
     input CLK,
     input CLR
 );
 
 always@(posedge CLK) begin
         if(CLR) begin
-            Shift_o <= 1'b0;
-            ALU_o <= 4'b0000;
-            load_o <= 1'b0;
-            S_o <= 1'b0;
-            rf_o <= 1'b0;
-            size_o <= 1'b0;
-            enable_o <= 1'b0;
-            rw_o <= 1'b0;
+            Shift_Out <= 1'b0;
+            ALU_Out <= 4'b0000;
+            Load_Out <= 1'b0;
+            S_Out <= 1'b0;
+            rf_Out <= 1'b0;
+            Size_Out <= 1'b0;
+            Enable_Out <= 1'b0;
+            rw_Out <= 1'b0;
         end else begin
-            Shift_o <= Shift_i;
-            ALU_o <= ALU_i;
-            load_o <= load_i;
-            S_o <= S_i;
-            rf_o <= rf_i;
-            size_o <= size_i;
-            enable_o <= enable_i;
-            rw_o <= rw_i;
+            Shift_Out <= Shift_In;
+            ALU_Out <= ALU_In;
+            Load_Out <= Load_In;
+            S_Out <= S_In;
+            rf_Out <= rf_In;
+            Size_Out <= Size_In;
+            Enable_Out <= Enable_In;
+            rw_Out <= rw_In;
         end
     end
 endmodule
