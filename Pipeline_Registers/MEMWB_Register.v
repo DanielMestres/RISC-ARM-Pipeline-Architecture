@@ -1,19 +1,19 @@
 module MEMWB_Register (
-    output reg  load_o,
-    output reg rf_o,
-    input load_i,
-    input rf_i,
+    output reg  Load_Out,
+    output reg rf_Out,
+    input Load_In,
+    input rf_In,
     input CLK,
     input CLR
 );
 
 always@(posedge CLK) begin
         if(CLR) begin
-            load_o <= 1'b0;
-            rf_o <= 1'b0;
+            Load_Out <= 1'b0;
+            rf_Out <= 1'b0;
         end else begin
-            load_o <= load_i;
-            rf_o <= rf_i;
+            Load_Out <= Load_In;
+            rf_Out <= rf_In;
         end
     end
 endmodule
