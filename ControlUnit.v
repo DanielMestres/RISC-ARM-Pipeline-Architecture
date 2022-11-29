@@ -11,18 +11,6 @@ module Control_Unit (
     input [31:0] I
 );
     always@ (I) begin
-        if(I == 32'b0) begin    // NOP
-            S = 1'b0;
-            ID_ALU_Op = 4'b0000;
-            ID_RF_enable = 1'b0;
-            ID_B_instr = 1'b0;
-            ID_shift_imm = 1'b0;
-            m_size = 1'b0;
-            m_enable = 1'b0;
-            m_rw = 1'b0;
-            ID_Load_Inst = 1'b0;
-        end
-
         case(I[27:25])
             3'b000:begin        // DPSI
                 S = I[20];
@@ -114,5 +102,17 @@ module Control_Unit (
                 end
             end
         endcase
+
+        if(I == 32'b00000000000000000000000000000000) begin    // NOP
+            S = 1'b0;
+            ID_ALU_Op = 4'b0000;
+            ID_RF_enable = 1'b0;
+            ID_B_instr = 1'b0;
+            ID_shift_imm = 1'b0;
+            m_size = 1'b0;
+            m_enable = 1'b0;
+            m_rw = 1'b0;
+            ID_Load_Inst = 1'b0;
+        end
     end
 endmodule

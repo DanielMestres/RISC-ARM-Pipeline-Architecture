@@ -19,13 +19,13 @@ module EXMEM_Register (
             rf_Out <= 1'b0;
             Size_Out <= 1'b0;
             Enable_Out <= 1'b0;
-            rw_o <= 1'b0;
+            rw_Out <= 1'b0;
         end else begin
             Load_Out <= Load_In;
             rf_Out <= rf_In;
             Size_Out <= Size_In;
             Enable_Out <= Enable_In;
-            rw_o <= rw_In;
+            rw_Out <= rw_In;
         end
     end
 endmodule
