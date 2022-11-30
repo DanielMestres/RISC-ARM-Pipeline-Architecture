@@ -21,7 +21,7 @@ module HazardUnit (
 // RN y RM en ID es igual a RD en EX,MEM o RW, Data forward el RD a ID
 // En una intruccion de LOAD, si RN y RM en ID es igual a RD en EX, has un NOP. si es igual en MEM o WB, data forward RD a ID.
 
-always@(posedge CLK)begin   // Fix clock posedge CLK synchronize 
+always@ (posedge CLK) begin   // Fix clock posedge CLK synchronize 
     ISA = 2'b00;
     ISB = 2'b00;
     ISD = 2'b00;
@@ -30,10 +30,8 @@ always@(posedge CLK)begin   // Fix clock posedge CLK synchronize
     IF_ID_ld = 1'b1;
 
     // Data Hazard load
-    if(enable_LD_EX) 
-    begin
-        if(RW_EX == RA_ID || RW_EX == RB_ID)
-        begin
+    if(enable_LD_EX) begin
+        if(RW_EX == RA_ID || RW_EX == RB_ID) begin
             HZld = 1'b0;
             IF_ID_ld = 1'b0;
             C_Unit_MUX = 1'b0;
@@ -41,50 +39,38 @@ always@(posedge CLK)begin   // Fix clock posedge CLK synchronize
     end
 
     // Data Forwarding
-    if(enable_RF_WB)
-    begin
-        if(RW_WB == RA_ID)
-        begin
+    if(enable_RF_WB) begin
+        if(RW_WB == RA_ID) begin
             ISA = 2'b11;
         end
-        if(RW_WB == RB_ID)
-        begin
+        if(RW_WB == RB_ID) begin
             ISB = 2'b11;
         end
-        if(C_ID == RW_WB)     // Forwarding Store
-        begin
+        if(C_ID == RW_WB) begin     // Forwarding Store
             ISD = 2'b11;
         end
     end
 
-    if(enable_RF_MEM)
-    begin
-        if(RW_MEM == RA_ID)
-        begin
+    if(enable_RF_MEM) begin
+        if(RW_MEM == RA_ID) begin
             ISA = 2'b10;
         end
-        if(RW_MEM == RB_ID)
-        begin
+        if(RW_MEM == RB_ID) begin
             ISB = 2'b10;
         end
-        if(C_ID == RW_MEM)    // Forwarding Store
-        begin
+        if(C_ID == RW_MEM) begin    // Forwarding Store
             ISD = 2'b10;
         end
     end
 
-    if(enable_RF_EX)
-    begin
-        if(RW_EX = =RA_ID)
-        begin
+    if(enable_RF_EX) begin
+        if(RW_EX == RA_ID) begin
             ISA = 2'b01;
         end
-        if(RW_EX == RB_ID)
-        begin
+        if(RW_EX == RB_ID) begin
             ISB = 2'b01;
         end
-        if(C_ID == RW_EX)     // Forwarding Store
-        begin
+        if(C_ID == RW_EX) begin     // Forwarding Store
             ISD = 2'b01;
         end
     end

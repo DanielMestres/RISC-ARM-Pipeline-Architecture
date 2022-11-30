@@ -204,177 +204,177 @@ endmodule
 
 
 /*****REGISTER FILE TEST******/
-module regfile_test;
+// module regfile_test;
 
-    wire [31:0] PCA;
-    wire [31:0] PCB;
-    wire [31:0] PC3;
-    wire [31:0] PCout;
+//     wire [31:0] PCA;
+//     wire [31:0] PCB;
+//     wire [31:0] PC3;
+//     wire [31:0] PCout;
 
-    reg         Ld;
-    reg         PCE;
-    reg         BL;
-    reg  [3:0]  decode_input;
-    reg         clock;
-    reg [31:0]  PCin;   //Ds
-    reg [31:0]  PC_4_in;
-    reg [31:0]  Ds;
-    reg  [3:0]  SA;
-    reg  [3:0]  SB;
-    reg  [3:0]  S3;
+//     reg         Ld;
+//     reg         PCE;
+//     reg         BL;
+//     reg  [3:0]  decode_input;
+//     reg         clock;
+//     reg [31:0]  PCin;   //Ds
+//     reg [31:0]  PC_4_in;
+//     reg [31:0]  Ds;
+//     reg  [3:0]  SA;
+//     reg  [3:0]  SB;
+//     reg  [3:0]  S3;
 
-    parameter simtime = 10000;
+//     parameter simtime = 10000;
 
-    fileregister fr(PCA, PCB, PC3, PCout, Ld, PCE, BL, decode_input, clock, PCin,PC_4_in, Ds, SA, SB, S3);
+//     fileregister fr(PCA, PCB, PC3, PCout, Ld, PCE, BL, decode_input, clock, PCin,PC_4_in, Ds, SA, SB, S3);
                     
 
-    initial #simtime $finish;
+//     initial #simtime $finish;
 
-    initial fork 
-        //Ld=0;
-        Ld = 1;
+//     initial fork 
+//         //Ld=0;
+//         Ld = 1;
 
-        clock = 0;
-        repeat (40) #1 begin
-           clock=~clock;
-            if (clock) begin
-                //#1 //PC=PC4;
-            end
-        end
+//         clock = 0;
+//         repeat (40) #1 begin
+//            clock=~clock;
+//             if (clock) begin
+//                 //#1 //PC=PC4;
+//             end
+//         end
 
-        decode_input = 4'b0000;
-        PCin = 32'hF0000000;
-        Ds = 32'h01010101;
-        SA=0;
-        SB=0;
-        S3=0;
+//         decode_input = 4'b0000;
+//         PCin = 32'hF0000000;
+//         Ds = 32'h01010101;
+//         SA=0;
+//         SB=0;
+//         S3=0;
         
 
-        #2 begin 
-            // clock=0;
-            //PC=PC4;
-            BL=1;
-            decode_input++;
-            Ds =32'h10101010;
-            SA++;SB++; S3++;
-            // clock=1;
-        end
+//         #2 begin 
+//             // clock=0;
+//             //PC=PC4;
+//             BL=1;
+//             decode_input++;
+//             Ds =32'h10101010;
+//             SA++;SB++; S3++;
+//             // clock=1;
+//         end
 
-        #4 begin 
-            // clock=0;
-            //PC=PC4;
-            BL=0;
-            decode_input++;
-            Ds = 32'h20202020;
-            SA++;SB++; S3++;
-            // clock=1;
-        end
+//         #4 begin 
+//             // clock=0;
+//             //PC=PC4;
+//             BL=0;
+//             decode_input++;
+//             Ds = 32'h20202020;
+//             SA++;SB++; S3++;
+//             // clock=1;
+//         end
 
-        #6 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'h30303030;
-            SA++;SB++; S3++;
-        end
+//         #6 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'h30303030;
+//             SA++;SB++; S3++;
+//         end
 
-        #8 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'h40404040;
-            SA++;SB++; S3++;
-        end
+//         #8 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'h40404040;
+//             SA++;SB++; S3++;
+//         end
 
-        #10 begin 
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'H50505050;
-            SA++;SB++; S3++;
-        end
+//         #10 begin 
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'H50505050;
+//             SA++;SB++; S3++;
+//         end
 
-        #12 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'h60606060;
-            SA++;SB++; S3++;
-        end
+//         #12 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'h60606060;
+//             SA++;SB++; S3++;
+//         end
 
-        #14 begin 
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'H70707070;
-            SA++;SB++; S3++;
-        end
+//         #14 begin 
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'H70707070;
+//             SA++;SB++; S3++;
+//         end
 
-        #16 begin 
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'h80808080;
-            SA++;SB++; S3++;
-        end
+//         #16 begin 
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'h80808080;
+//             SA++;SB++; S3++;
+//         end
 
-        #18 begin 
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'h90909090;
-            SA++;SB++; S3++;
-        end
+//         #18 begin 
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'h90909090;
+//             SA++;SB++; S3++;
+//         end
 
-        #20 begin 
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'hA0A0A0A0;
-            SA++;SB++;
-        end
+//         #20 begin 
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'hA0A0A0A0;
+//             SA++;SB++;
+//         end
 
-        #22 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'hB0B0B0B0;
-            SA++;SB++;
-        end
+//         #22 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'hB0B0B0B0;
+//             SA++;SB++;
+//         end
 
-        #24 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'hC0C0C0C0;
-            SA++;SB++;
-        end
+//         #24 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'hC0C0C0C0;
+//             SA++;SB++;
+//         end
 
-        #26 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'hD0D0D0D0;
-            SA++;SB++;
-        end
+//         #26 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'hD0D0D0D0;
+//             SA++;SB++;
+//         end
 
-        #28 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'hE0E0E0E0;
-            SA++;SB++;
-        end
+//         #28 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'hE0E0E0E0;
+//             SA++;SB++;
+//         end
 
-        #30 begin
-            //PC=PC4;
-            decode_input++;
-            Ds = 32'hF0F0F0F0;
-            SA++;SB++;
-        end
+//         #30 begin
+//             //PC=PC4;
+//             decode_input++;
+//             Ds = 32'hF0F0F0F0;
+//             SA++;SB++;
+//         end
 
-        #32 begin 
-            //PC=PC4;
-            decode_input=10;
-            Ds = 32'h0fff0fff;
-            SA=10; 
-        end
+//         #32 begin 
+//             //PC=PC4;
+//             decode_input=10;
+//             Ds = 32'h0fff0fff;
+//             SA=10; 
+//         end
 
-    join
+//     join
 
-    initial begin
-        $display ("\n           FILE REGISTER TEST");
-        $display("Ld  decin   PC     Ds     SA    SB    S3    PCA  PCB   PC3   clk");
-        $monitor("%b    %d    %h   %h   %b  %b  %b  %h  %h  %h   %b",Ld, decode_input, PCin,Ds, SA, SB, S3, PCA, PCB, PC3, clock);
-    end
+//     initial begin
+//         $display ("\n           FILE REGISTER TEST");
+//         $display("Ld  decin   PC     Ds     SA    SB    S3    PCA  PCB   PC3   clk");
+//         $monitor("%b    %d    %h   %h   %b  %b  %b  %h  %h  %h   %b",Ld, decode_input, PCin,Ds, SA, SB, S3, PCA, PCB, PC3, clock);
+//     end
 
 
-endmodule
+// endmodule
