@@ -1,7 +1,7 @@
 module IDEX_Register (
     output reg  Shift_Out,
     output reg [3:0] ALU_Out,
-    output reg Size_Out,
+    output reg [1:0] Size_Out,
     output reg Enable_Out,
     output reg rw_Out,
     output reg Load_Out,
@@ -9,7 +9,7 @@ module IDEX_Register (
     output reg rf_Out,
     input Shift_In,
     input [3:0] ALU_In,
-    input Size_In,
+    input [1:0] Size_In,
     input Enable_In,
     input rw_In,
     input Load_In,
@@ -26,7 +26,7 @@ always@(posedge CLK) begin
             Load_Out <= 1'b0;
             S_Out <= 1'b0;
             rf_Out <= 1'b0;
-            Size_Out <= 1'b0;
+            Size_Out <= 2'b00;
             Enable_Out <= 1'b0;
             rw_Out <= 1'b0;
         end else begin

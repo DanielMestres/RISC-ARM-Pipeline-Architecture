@@ -2,7 +2,7 @@
 module Mux_CU (
     output reg Shift_o,
     output reg [3:0] ALU_o,
-    output reg size_o,
+    output reg [1:0] size_o,
     output reg enable_o,
     output reg rw_o,
     output reg load_o,
@@ -10,7 +10,7 @@ module Mux_CU (
     output reg RF_o,
     input Shift_i,
     input [3:0] ALU_i,
-    input size_i,
+    input [1:0] size_i,
     input enable_i,
     input rw_i,
     input load_i,
@@ -31,7 +31,7 @@ module Mux_CU (
         end else begin
             Shift_o = 1'b0;
             ALU_o = 4'b0000;
-            size_o = 1'b0;
+            size_o = 2'b00;
             enable_o = 1'b0;
             rw_o = 1'b0;
             load_o = 1'b0;

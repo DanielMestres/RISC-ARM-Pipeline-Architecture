@@ -12,11 +12,11 @@
 // Reference /docs/diagrama fase 3.pdf
 
 // Input:
-// 11100000100000100101000000000101 (ADD R5,R2,R5)
-// 11100010010100110011000000000001 (SUBS R3,R3, #1)
-// 00011010111111111111111111111101 (BNE -3)
-// 11100101110000010101000000000011 (STRB R5, [R1,#3])
-// 11011011000000000000000000000001 (BLLE +2)
+// 11100000100000100101000000000101 (ADD R5,R2,R5)          Add
+// 11100010010100110011000000000001 (SUBS R3,R3, #1)        Sub
+// 00011010111111111111111111111101 (BNE -3)                Branch
+// 11100101110000010101000000000011 (STRB R5, [R1,#3])      Store
+// 11011011000000000000000000000001 (BLLE +2)               Branch and Link
 // 00000000000000000000000000000000 (NOP)
 // 00000000000000000000000000000000 (NOP)
 // 00000000000000000000000000000000 (NOP)
@@ -32,15 +32,16 @@ module Phase_3();
     wire ID_load_instr;
     wire ID_RF_enable;
     wire ID_B_instr;
-    wire size_ID;
+    wire B_L;
+    wire [1:0] size_ID;
     wire enable_ID;
     wire rw_ID;
     wire s_ID;
 
     // CU_MUX outputs
     wire shift_imm_CU;
-    wire [3:0]ALU_Op_CU;
-    wire size_CU;
+    wire [3:0] ALU_Op_CU;
+    wire [1:0] size_CU;
     wire enable_CU;
     wire rw_CU;
     wire Load_Inst_CU;
@@ -51,7 +52,7 @@ module Phase_3();
     // IF outputs
     wire shift_imm_IF;
     wire [3:0] ALU_Op_IF;
-    wire size_IF;
+    wire [1:0] size_IF;
     wire enable_IF;
     wire rw_IF;
     wire Load_Inst_IF;
@@ -61,7 +62,7 @@ module Phase_3();
     // EX outputs
     wire shift_imm_EX;
     wire [3:0] ALU_Op_EX;
-    wire size_EX;
+    wire [1:0] size_EX;
     wire enable_EX;
     wire rw_EX;
     wire Load_Inst_EX;
@@ -69,7 +70,7 @@ module Phase_3();
     wire RF_enable_EX;
 
     // MEM outs
-    wire size_MEM;
+    wire [1:0] size_MEM;
     wire enable_MEM; 
     wire rw_MEM;
     wire Load_Inst_MEM;
@@ -109,7 +110,7 @@ module Phase_3();
     reg_PC PC_R(PC, PC_4, LE, CLK, CLR);
     PC_4_Adder PC4(PC_4, PC);
     IFID_Register if_id (Out, Inst_out, CLK, CLR);
-    Control_Unit c_u (shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,s_CU,RF_enable_CU,B_instr_CU,Out);
+    Control_Unit c_u (shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,s_CU,RF_enable_CU,B_instr_CU,B_L,Out);
     Mux_CU c_u_mux(ID_shift_imm,ID_ALU_op,size_ID,enable_ID,rw_ID,ID_load_instr,s_ID,ID_RF_enable,shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,s_CU,RF_enable_CU,select_mux);
     IDEX_Register id_ex(shift_imm_EX,ALU_Op_EX,size_EX,enable_EX,rw_EX,Load_Inst_EX,change_EX,RF_enable_EX,ID_shift_imm,ID_ALU_op,size_ID,enable_ID,rw_ID,ID_load_instr,s_ID,ID_RF_enable,CLK,CLR);
     EXMEM_Register ex_mem(size_MEM,enable_MEM,rw_MEM,Load_Inst_MEM,RF_enable_MEM,size_EX,enable_EX,rw_EX,Load_Inst_EX,RF_enable_EX,CLK,CLR);
@@ -120,8 +121,6 @@ module Phase_3();
         CLK = 1'b1;
         CLR = 1'b0; // before tick starts, reset=0
         #1 CLR = ~CLR; // after two ticks, change value to 0
-        
-
         repeat(11) begin
         #5;
         CLK = ~CLK;
@@ -133,8 +132,8 @@ module Phase_3();
     initial begin
         #5;
         $display("\n       Phase 3 Circuit       ");
-        $display ("\n      PC+4   IFID_IN                           IFID_OUT                          C_U_OUT SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF B IDEX SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF EXMEM SIZE EN_MEM RW LOAD RF MEMWB LOAD RF");
-        $monitor("%d   %b  %b        | %b     %b   %b    %b      %b   %b    %b %b  %b    | %b     %b   %b    %b      %b   %b    %b %b      | %b    %b      %b  %b    %b      | %b    %b", 
-                PC_4, Inst_out, Out,shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,s_CU,RF_enable_CU,B_instr_CU, shift_imm_EX,ALU_Op_EX,size_EX,enable_EX,rw_EX,Load_Inst_EX,change_EX,RF_enable_EX, size_MEM,enable_MEM,rw_MEM,Load_Inst_MEM,RF_enable_MEM, Load_Inst_WB,RF_enable_WB);
+        $display ("\n      PC+4   IFID_IN                           IFID_OUT                          C_U_OUT SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF B B_L IDEX SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF EXMEM SIZE EN_MEM RW LOAD RF MEMWB LOAD RF");
+        $monitor("%d   %b  %b        | %b     %b   %b    %b     %b   %b    %b %b  %b  %b     | %b     %b   %b    %b      %b   %b    %b %b      | %b    %b      %b  %b    %b    | %b    %b", 
+                PC_4, Inst_out, Out,shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,s_CU,RF_enable_CU,B_instr_CU, B_L, shift_imm_EX,ALU_Op_EX,size_EX,enable_EX,rw_EX,Load_Inst_EX,change_EX,RF_enable_EX, size_MEM,enable_MEM,rw_MEM,Load_Inst_MEM,RF_enable_MEM, Load_Inst_WB,RF_enable_WB);
     end
 endmodule

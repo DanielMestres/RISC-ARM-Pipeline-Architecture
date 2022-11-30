@@ -1,70 +1,79 @@
 module Control_Unit (
     output reg ID_shift_imm,
     output reg [3:0] ID_ALU_Op,
-    output reg m_size,
+    output reg [1:0] m_size,
     output reg m_enable,
     output reg m_rw,
     output reg ID_Load_Inst,
     output reg S,
     output reg ID_RF_enable,
     output reg ID_B_instr,
+    output reg B_L,
     input [31:0] I
 );
     always@ (I) begin
         case(I[27:25])
-            3'b000:begin        // DPSI
+            3'b000:begin        // Data Processing Imm Shift
                 S = I[20];
                 ID_ALU_Op = I[24:21];
                 ID_RF_enable = 1'b1;
                 ID_B_instr = 1'b0;
+                B_L = 1'b0;
                 ID_shift_imm = 1'b1;
                 m_size = 1'b0;
-                m_enable = 1'b1;
+                m_enable = 1'b0;
                 m_rw = 1'b0;
                 ID_Load_Inst = 1'b0;
                 if(I[11:7] == 5'b00000) begin
                     ID_shift_imm = 1'b0;
                 end
             end
-            3'b001:begin        // DPI[2]
+            3'b001:begin        // Data Processing Imm
                 S = I[20];
-                ID_shift_imm = 1'b1; 
+                ID_ALU_Op = I[24:21]; 
                 ID_RF_enable = 1'b1; 
-                ID_Load_Inst = 1'b0; 
                 ID_B_instr = 1'b0;
-                ID_ALU_Op = I[24:21];
+                B_L = 1'b0;
+                ID_shift_imm = 1'b0;
+                m_size = 1'b0;
+                m_enable = 1'b0;
                 m_rw = 1'b0;
+                ID_Load_Inst = 1'b0;
             end
-            3'b010:begin        // L/S IO
+            3'b010:begin        // Load Store imm offset
                 S = 1'b0;
                 ID_shift_imm = 1'b1; 
                 ID_Load_Inst = I[20]; 
                 ID_B_instr = 1'b0;
-                m_size = I[22];
-                //Store
+                B_L = 1'b0;
+                m_size = I[22:21];
+                // Store
                 if(I[20] == 1'b0) begin 
                     ID_RF_enable = 1'b0;
+                    m_enable = 1'b1;
                     m_rw = 1'b1;
-                end 
-                //Load
+                end
+                // Load
                 else begin
                     ID_RF_enable = 1'b1; 
+                    m_enable = 1'b0;
                     m_rw = 1'b0;
                 end 
                 if(I[23] == 1) begin
-                    ID_ALU_Op = 4'b0100; //suma
+                    ID_ALU_Op = 4'b0100; // add
                 end
                 else begin
-                    ID_ALU_Op = 4'b0010; //resta  
+                    ID_ALU_Op = 4'b0010; // subtract  
                 end    
             end
-            3'b011:begin        // L/S RO
+            3'b011:begin        // Load Store reg offset
                 S = 1'b0;
                 ID_Load_Inst = I[20];
-                m_size = I[22];
+                m_size = I[22:21];
                 ID_shift_imm = 1'b0; 
                 ID_B_instr = 1'b0;
-                //plus sign
+                B_L = 1'b0;
+                // plus sign
                 if(I[23]== 1'b1) begin 
                     ID_ALU_Op = 4'b0100;
                 end
@@ -72,12 +81,12 @@ module Control_Unit (
                 else begin  
                     ID_ALU_Op = 4'b0010; 
                 end
-                //S
+                // S
                 if(I[20] == 1'b0) begin
                     ID_RF_enable = 1'b0;
                     m_rw = 1'b1;
                 end 
-                //L
+                // L
                 else begin
                     ID_RF_enable = 1'b1; 
                     m_rw = 1'b0;
@@ -85,6 +94,7 @@ module Control_Unit (
             end
             3'b101:begin        // B/L
                 ID_B_instr = 1'b1;
+                m_enable = 1'b0;
                 S = 1'b0; 
                 ID_shift_imm = 1'b0;  
                 ID_Load_Inst = 1'b0;  
@@ -92,11 +102,13 @@ module Control_Unit (
                 m_size = 1'b0;                 
                 // Branch
                 if(I[24] == 1'b0) begin 
+                    B_L = 1'b0;
                     ID_RF_enable = 1'b0; 
                     ID_ALU_Op = 4'b0010;
                 end 
                 else begin 
                     // Link 
+                    B_L = 1'b1;
                     ID_RF_enable = 1'b1;  
                     ID_ALU_Op = 4'b0100;
                 end
