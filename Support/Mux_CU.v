@@ -16,10 +16,10 @@ module Mux_CU (
     input load_i,
     input S_i,
     input RF_i,
-    input select
+    input sel
 );
-    always@ (Shift_i, ALU_i, size_i, enable_i, rw_i, load_i, S_i, RF_i, select) begin
-        if(select == 0) begin
+    always@ (Shift_i, ALU_i, size_i, enable_i, rw_i, load_i, S_i, RF_i, sel) begin
+        if(sel == 0) begin
             Shift_o = Shift_i;
             ALU_o = ALU_i;
             size_o = size_i;
@@ -28,7 +28,7 @@ module Mux_CU (
             load_o = load_i;
             S_o = S_i;
             RF_o = RF_i;
-        end else begin
+        end else begin      // NOP
             Shift_o = 1'b0;
             ALU_o = 4'b0000;
             size_o = 2'b00;

@@ -1,17 +1,338 @@
-`include "Memory/ram.v"
-`include "ControlUnit.v"
-`include "Support/Reg_PC.v"
-`include "Support/PC_4_Adder.v"
-`include "Support/Mux_CU.v"
-`include "Pipeline_Registers/IFID_Register.v"
-`include "Pipeline_Registers/IDEX_Register.v"
-`include "Pipeline_Registers/EXMEM_Register.v"
-`include "Pipeline_Registers/MEMWB_Register.v"
+// `include "Memory/ram.v"
+// `include "ControlUnit.v"
+// `include "Support/Reg_PC.v"
+// `include "Support/PC_4_Adder.v"
+// `include "Support/Mux_CU.v"
+// `include "Pipeline_Registers/IFID_Register.v"
+// `include "Pipeline_Registers/IDEX_Register.v"
+// `include "Pipeline_Registers/EXMEM_Register.v"
+// `include "Pipeline_Registers/MEMWB_Register.v"
+
+// Included modules in same file in order to submit 1 file
+
+module IFID_Register (
+    output reg [31:0] IFID_Out,
+    input [31:0] IFID_In,
+    input CLK,
+    input CLR
+);
+
+    always@ (posedge CLK) begin
+        if(CLR) begin
+            IFID_Out <= 32'b00000000000000000000000000000000;
+        end
+        else begin
+            IFID_Out <= IFID_In;
+        end
+    end
+endmodule
+
+module IDEX_Register (
+    output reg  Shift_Out,
+    output reg [3:0] ALU_Out,
+    output reg [1:0] Size_Out,
+    output reg Enable_Out,
+    output reg rw_Out,
+    output reg Load_Out,
+    output reg S_Out,
+    output reg rf_Out,
+    input Shift_In,
+    input [3:0] ALU_In,
+    input [1:0] Size_In,
+    input Enable_In,
+    input rw_In,
+    input Load_In,
+    input S_In,
+    input rf_In,
+    input CLK,
+    input CLR
+);
+
+always@(posedge CLK) begin
+        if(CLR) begin
+            Shift_Out <= 1'b0;
+            ALU_Out <= 4'b0000;
+            Load_Out <= 1'b0;
+            S_Out <= 1'b0;
+            rf_Out <= 1'b0;
+            Size_Out <= 2'b00;
+            Enable_Out <= 1'b0;
+            rw_Out <= 1'b0;
+        end else begin
+            Shift_Out <= Shift_In;
+            ALU_Out <= ALU_In;
+            Load_Out <= Load_In;
+            S_Out <= S_In;
+            rf_Out <= rf_In;
+            Size_Out <= Size_In;
+            Enable_Out <= Enable_In;
+            rw_Out <= rw_In;
+        end
+    end
+endmodule
+
+module EXMEM_Register (
+    output reg [1:0] Size_Out,
+    output reg Enable_Out,
+    output reg rw_Out,
+    output reg  Load_Out,
+    output reg rf_Out,
+    input [1:0] Size_In,
+    input Enable_In,
+    input rw_In,
+    input Load_In,
+    input rf_In,
+    input CLK,
+    input CLR
+);
+
+    always@(posedge CLK) begin
+        if(CLR) begin
+            Load_Out <= 1'b0;
+            rf_Out <= 1'b0;
+            Size_Out <= 2'b00;
+            Enable_Out <= 1'b0;
+            rw_Out <= 1'b0;
+        end else begin
+            Load_Out <= Load_In;
+            rf_Out <= rf_In;
+            Size_Out <= Size_In;
+            Enable_Out <= Enable_In;
+            rw_Out <= rw_In;
+        end
+    end
+endmodule
+
+module MEMWB_Register (
+    output reg  Load_Out,
+    output reg rf_Out,
+    input Load_In,
+    input rf_In,
+    input CLK,
+    input CLR
+);
+
+always@(posedge CLK) begin
+        if(CLR) begin
+            Load_Out <= 1'b0;
+            rf_Out <= 1'b0;
+        end else begin
+            Load_Out <= Load_In;
+            rf_Out <= rf_In;
+        end
+    end
+endmodule
+
+module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address);        
+   reg[7:0] Mem[0:255]; // 256 8-byte addresses
+    always @ (Address)  begin                
+        // Instruction start at even, multiples of 4, addresses
+        if(Address % 4 == 0) begin           
+            DataOut = {Mem[Address],Mem[Address + 1], Mem[Address + 2], Mem[Address + 3]};  
+        end else begin
+            DataOut = Mem[Address];
+        end                
+    end
+endmodule
+
+module reg_PC(PC_out, PC_in, LE, CLK, CLR);
+    output reg [31:0] PC_out;
+    input [31:0] PC_in;
+    input LE, CLK, CLR;         // LE, Clock and Reset
+
+    always @ (posedge CLK, posedge CLR) begin
+        if(CLR) PC_out <= 32'b00000000000000000000000000000000;
+
+        else if(LE) PC_out <= PC_in;
+    end
+endmodule
+
+module PC_4_Adder (
+    output reg [31:0] PC_4,
+    input [31:0] PC
+);
+    always@ (PC) begin
+        PC_4 <= PC + 4;
+    end
+endmodule
+
+module Control_Unit (
+    output reg ID_shift_imm,
+    output reg [3:0] ID_ALU_Op,
+    output reg [1:0] mem_size,
+    output reg mem_enable,
+    output reg mem_RW,
+    output reg ID_Load_Inst,
+    output reg S,
+    output reg ID_RF_enable,
+    output reg ID_B_instr,
+    output reg B_L,
+    input [31:0] I
+);
+    always@ (I) begin
+        case(I[27:25])
+            3'b000:begin        // Data Processing Imm Shift
+                S = I[20];
+                ID_ALU_Op = I[24:21];
+                ID_RF_enable = 1'b1;
+                ID_B_instr = 1'b0;
+                B_L = 1'b0;
+                ID_shift_imm = 1'b1;
+                mem_size = 1'b0;
+                mem_enable = 1'b0;
+                mem_RW = 1'b0;
+                ID_Load_Inst = 1'b0;
+            end
+            3'b001:begin        // Data Processing Imm
+                S = I[20];
+                ID_ALU_Op = I[24:21]; 
+                ID_RF_enable = 1'b1; 
+                ID_B_instr = 1'b0;
+                B_L = 1'b0;
+                ID_shift_imm = 1'b0;
+                mem_size = 1'b0;
+                mem_enable = 1'b0;
+                mem_RW = 1'b0;
+                ID_Load_Inst = 1'b0;
+            end
+            3'b010:begin        // Load Store imm offset
+                S = 1'b0;
+                ID_shift_imm = 1'b0; 
+                ID_Load_Inst = I[20]; 
+                ID_B_instr = 1'b0;
+                B_L = 1'b0;
+                mem_size = I[22:21];
+                // Store
+                if(I[20] == 1'b0) begin 
+                    ID_RF_enable = 1'b0;
+                    mem_enable = 1'b1;
+                    mem_RW = 1'b1;
+                end
+                // Load
+                else begin
+                    ID_RF_enable = 1'b1; 
+                    mem_enable = 1'b0;
+                    mem_RW = 1'b0;
+                end 
+                if(I[23] == 1) begin
+                    ID_ALU_Op = 4'b0100; // add
+                end
+                else begin
+                    ID_ALU_Op = 4'b0010; // subtract  
+                end    
+            end
+            3'b011:begin        // Load Store reg offset
+                S = 1'b0;
+                ID_Load_Inst = I[20];
+                mem_size = I[22:21];
+                ID_shift_imm = 1'b0; 
+                ID_B_instr = 1'b0;
+                B_L = 1'b0;
+                // plus sign
+                if(I[23]== 1'b1) begin 
+                    ID_ALU_Op = 4'b0100;
+                end
+                // minus sign
+                else begin  
+                    ID_ALU_Op = 4'b0010; 
+                end
+                // S
+                if(I[20] == 1'b0) begin
+                    ID_RF_enable = 1'b0;
+                    mem_RW = 1'b1;
+                end 
+                // L
+                else begin
+                    ID_RF_enable = 1'b1; 
+                    mem_RW = 1'b0;
+                end
+            end
+            3'b101:begin        // B/L
+                ID_B_instr = 1'b1;
+                mem_enable = 1'b0;
+                S = 1'b0; 
+                ID_shift_imm = 1'b0;  
+                ID_Load_Inst = 1'b0;  
+                mem_RW = 1'b0;
+                mem_size = 1'b0;                 
+                // Branch
+                if(I[24] == 1'b0) begin 
+                    B_L = 1'b0;
+                    ID_RF_enable = 1'b0; 
+                    ID_ALU_Op = 4'b0010;
+                end 
+                else begin 
+                    // Link 
+                    B_L = 1'b1;
+                    ID_RF_enable = 1'b1;  
+                    ID_ALU_Op = 4'b0100;
+                end
+            end
+        endcase
+
+        if(I == 32'b00000000000000000000000000000000) begin    // NOP
+            S = 1'b0;
+            ID_ALU_Op = 4'b0000;
+            ID_RF_enable = 1'b0;
+            ID_B_instr = 1'b0;
+            ID_shift_imm = 1'b0;
+            mem_size = 2'b00;
+            mem_enable = 1'b0;
+            mem_RW = 1'b0;
+            ID_Load_Inst = 1'b0;
+        end
+    end
+endmodule
+
+module Mux_CU (
+    output reg Shift_o,
+    output reg [3:0] ALU_o,
+    output reg [1:0] size_o,
+    output reg enable_o,
+    output reg rw_o,
+    output reg load_o,
+    output reg S_o,
+    output reg RF_o,
+    input Shift_i,
+    input [3:0] ALU_i,
+    input [1:0] size_i,
+    input enable_i,
+    input rw_i,
+    input load_i,
+    input S_i,
+    input RF_i,
+    input sel
+);
+    always@ (Shift_i, ALU_i, size_i, enable_i, rw_i, load_i, S_i, RF_i, sel) begin
+        if(sel == 0) begin
+            Shift_o = Shift_i;
+            ALU_o = ALU_i;
+            size_o = size_i;
+            enable_o = enable_i;
+            rw_o = rw_i;
+            load_o = load_i;
+            S_o = S_i;
+            RF_o = RF_i;
+        end else begin      // NOP
+            Shift_o = 1'b0;
+            ALU_o = 4'b0000;
+            size_o = 2'b00;
+            enable_o = 1'b0;
+            rw_o = 1'b0;
+            load_o = 1'b0;
+            S_o = 1'b0;
+            RF_o = 1'b0;
+        end
+    end
+endmodule
 
 // This module is to initialize and connect everything for phase 3
 // Reference /docs/diagrama fase 3.pdf
 
 // Input:
+// 00000000000000000000000000000000 (NOP)
+// 00000000000000000000000000000000 (NOP)
+// 00000000000000000000000000000000 (NOP)
 // 11100000100000100101000000000101 (ADD R5,R2,R5)          Add
 // 11100010010100110011000000000001 (SUBS R3,R3, #1)        Sub
 // 00011010111111111111111111111101 (BNE -3)                Branch
@@ -131,7 +452,7 @@ module Phase_3();
 
     initial begin
         #5;
-        $display("\n       Phase 3 Circuit       ");
+        $display("\n       Phase 3 Simulation       ");
         $display ("\n      PC+4   IFID_IN                           IFID_OUT                          C_U_OUT SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF B B_L IDEX SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF EXMEM SIZE EN_MEM RW LOAD RF MEMWB LOAD RF");
         $monitor("%d   %b  %b        | %b     %b   %b    %b     %b   %b    %b %b  %b  %b     | %b     %b   %b    %b      %b   %b    %b %b      | %b    %b      %b  %b    %b    | %b    %b", 
                 PC_4, Inst_out, Out,shift_imm_CU,ALU_Op_CU,size_CU,enable_CU,rw_CU,Load_Inst_CU,s_CU,RF_enable_CU,B_instr_CU, B_L, shift_imm_EX,ALU_Op_EX,size_EX,enable_EX,rw_EX,Load_Inst_EX,change_EX,RF_enable_EX, size_MEM,enable_MEM,rw_MEM,Load_Inst_MEM,RF_enable_MEM, Load_Inst_WB,RF_enable_WB);
