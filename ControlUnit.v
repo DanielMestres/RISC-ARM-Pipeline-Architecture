@@ -95,18 +95,17 @@ module Control_Unit (
                 S = 1'b0; 
                 ID_shift_imm = 1'b0;  
                 ID_Load_Inst = 1'b0;  
+                ID_RF_enable = 1'b0;
                 mem_RW = 1'b0;
                 mem_size = 1'b0;                 
                 // Branch
                 if(I[24] == 1'b0) begin 
-                    B_L = 1'b0;
-                    ID_RF_enable = 1'b0; 
+                    B_L = 1'b0; 
                     ID_ALU_Op = 4'b0010;
                 end 
                 else begin 
                     // Link 
                     B_L = 1'b1;
-                    ID_RF_enable = 1'b1;  
                     ID_ALU_Op = 4'b0100;
                 end
             end
