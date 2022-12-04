@@ -28,6 +28,78 @@
 `include "Support/Mux.v"
 `include "HazardUnit.v"
 
-module Phase_4();
+module Phase_4(parameter PROGRAM_SIZE=11);
+/*              I / O                   */
+/*              CONT. UNIT              */
+    wire ID_shift_imm;
+    wire [3:0] ID_ALU_op;
+    wire ID_load_instr;
+    wire ID_RF_enable;
+    wire ID_B_instr;
+    wire ID_BL_instr;
+    wire [1:0] Size;
+    wire RF_Enable;
+    wire RW;
+    wire S;
+
+    // MUX outputs
+    wire shift_imm_CU;
+    wire [3:0] ALU_Op_CU;
+    wire [1:0] size_CU;
+    wire enable_CU;
+    wire rw_CU;
+    wire Load_Inst_CU;
+    wire s_CU;
+    wire RF_enable_CU;
+    wire select_mux;
+
+
+/*              IF STAGE                */
+
+
+/*              ID STAGE                */
+
+
+/*              EX STAGE                */
+
+
+/*              MEME STAGE              */
+
+
+/*              WB STAGE                */
+
+
+/*              INST. MODULES           */
+/*              IF STAGE                */
+
+
+/*              ID STAGE                */
+
+
+/*              EX STAGE                */
+
+
+/*              MEME STAGE              */
+
+
+/*              WB STAGE                */
+
+
+/*              TESTING                 */
+
+    // Clk & Clr
+    initial begin
+        CLK = 1'b1;
+        CLR = 1'b0;
+        #1 CLR = ~CLR;
+        repeat(PROGRAM_SIZE) begin
+        #5;
+        CLK = ~CLK;
+        CLK = ~CLK;
+        CLR = 1'b0;
+        end
+    end
+
+    // Display & Monitor
 
 endmodule

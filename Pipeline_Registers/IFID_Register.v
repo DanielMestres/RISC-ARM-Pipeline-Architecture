@@ -14,3 +14,5 @@ module IFID_Register (
         end
     end
 endmodule
+
+// ADD DIAGRAM INPUTS ???
