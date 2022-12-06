@@ -1,7 +1,0 @@
-Address=         0  DataOut=xxxxxxxx
-Address=         4  DataOut=e2533001
-Address=         8  DataOut=e2533001
-Address=        12  DataOut=e5c15003
-Address=        16  DataOut=e5c15003
-Address=        20  DataOut=00000000
-Address=        24  DataOut=00000000

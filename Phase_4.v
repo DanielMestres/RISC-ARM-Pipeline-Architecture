@@ -30,6 +30,11 @@
 
 module Phase_4(parameter PROGRAM_SIZE=11);
 /*              I / O                   */
+/*              INIT                    */
+    reg [31:0] addr;
+    wire [31:0] Inst_Out;
+    wire [31:0] Output;
+
 /*              CONT. UNIT              */
     wire ID_shift_imm;
     wire [3:0] ID_ALU_op;
@@ -58,6 +63,11 @@ module Phase_4(parameter PROGRAM_SIZE=11);
 
 
 /*              ID STAGE                */
+    // Register File
+    wire [31:0] PC;
+    reg LE = 1'b1;
+    reg CLK;
+    reg CLR;
 
 
 /*              EX STAGE                */
@@ -69,9 +79,26 @@ module Phase_4(parameter PROGRAM_SIZE=11);
 /*              WB STAGE                */
 
 
+/*              INTERNAL                */
+    integer fi, code;
+    reg [31:0] data;
+
+
 /*              INST. MODULES           */
 /*              IF STAGE                */
-
+    // Instantiate and precharge RAM
+    inst_ram256x8 ram1 (Inst_out, PC);
+    initial begin
+        fi = $fopen("Memory/ramintr.txt","r");          // Input file
+        addr = 32'b00000000000000000000000000000000;
+            while (!$feof(fi)) begin 
+                code = $fscanf(fi, "%b", data);
+                ram1.Mem[addr] = data;
+                addr = addr + 1;
+            end
+        $fclose(fi);
+            addr = 32'b00000000000000000000000000000000;
+    end
 
 /*              ID STAGE                */
 
