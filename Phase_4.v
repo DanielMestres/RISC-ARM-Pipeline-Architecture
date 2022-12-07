@@ -51,12 +51,15 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire EXMEM_Mem_RW_Out;
     wire EXMEM_Load_Instr_Out;
     wire EXMEM_RF_Enable_Out;
+    wire [31:0] EXMEM_RegFile_PortC_Out;
+    wire [31:0] EXMEM_Alu_Out;
 
     // MEMWB Register
     wire MEMWB_Load_Instr_Out;
     wire MEMWB_RF_Enable_Out;
     wire [31:0] MEMWB_DATA_MEM_Out;
     wire [31:0] MEMWB_ALU_MUX_Out;
+    wire [3:0] MEMWB_RD_Out;
 
 /*              MISC                    */
     // Control Unit
