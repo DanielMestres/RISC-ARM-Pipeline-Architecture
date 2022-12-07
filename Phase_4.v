@@ -10,7 +10,7 @@
 
 // IF / ID Phase
 `include "Support/PC_4_Adder.v"
-`include "Memory/ram.v"         // Contains both inst and data mem modules
+`include "memory/ram.v"         // Contains both inst and data mem modules
 `include "RegisterFile.v"
 `include "Support/Mux_4_1.v"
 `include "Support/Adder.v"
@@ -28,7 +28,7 @@
 `include "Support/Mux.v"
 `include "HazardUnit.v"
 
-module Phase_4(parameter PROGRAM_SIZE=11);
+module Phase_4 #(parameter PROGRAM_SIZE=11);
 /*--------------In's / Out's------------*/
 
 /*              Pipeline Reg's          */
@@ -55,6 +55,8 @@ module Phase_4(parameter PROGRAM_SIZE=11);
     // MEMWB Register
     wire MEMWB_Load_Instr_Out;
     wire MEMWB_RF_Enable_Out;
+    wire [31:0] MEMWB_DATA_MEM_Out;
+    wire [31:0] MEMWB_ALU_MUX_Out;
 
 /*              MISC                    */
     // Control Unit
@@ -92,7 +94,7 @@ module Phase_4(parameter PROGRAM_SIZE=11);
     wire PCenable;
     wire NOP_insertion_select;
 
-    
+
 
 /*              IF STAGE                */
     // Inst ram
