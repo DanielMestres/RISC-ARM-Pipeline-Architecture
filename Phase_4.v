@@ -85,6 +85,13 @@ module Phase_4(parameter PROGRAM_SIZE=11);
     wire ORCU_Out;
 
     // Hazard Forwarding Unit
+    wire MUXPA_select;
+    wire MUXPB_select;
+    wire MUXPC_select;
+    wire LE_IfId;
+    wire PCenable;
+    wire NOP_insertion_select;
+
     
 
 /*              IF STAGE                */
@@ -152,9 +159,12 @@ module Phase_4(parameter PROGRAM_SIZE=11);
     wire CTESTER_True_Out;
 
 /*              MEM STAGE               */
+    wire [31:0] Data_mem_out;
+    wire [31:0] MUX_data_mem_out;
 
 
 /*              WB STAGE                */
+    wire [31:0] MUXWB_out;
 
 
 /*--------------INTERNAL----------------*/
