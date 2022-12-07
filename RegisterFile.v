@@ -25,9 +25,9 @@ module register (
         input clock );
         
 
-    always @(posedge clock, R) 
-        if (R) Qs = 32'b00000000000000000000000000000000;
-        else if (E) Qs = Ds;
+    always @(posedge clock, posedge R) 
+        if (R) Qs <= 32'b00000000000000000000000000000000;
+        else if (E) Qs <= Ds;
         
 
 endmodule

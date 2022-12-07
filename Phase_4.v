@@ -28,7 +28,7 @@
 `include "Support/Mux.v"
 `include "HazardUnit.v"
 
-module Phase_4 #(parameter PROGRAM_SIZE=11);
+module Phase_4 #( parameter PROGRAM_SIZE=11 );
 /*--------------In's / Out's------------*/
 
 /*              Pipeline Reg's          */
