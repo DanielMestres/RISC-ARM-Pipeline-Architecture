@@ -1,7 +1,7 @@
 // MUX on Control Unit output
 module Mux_CU (
-    output reg Shift_o,
-    output reg [3:0] ALU_o,
+    output reg Shift_output,
+    output reg [3:0] ALU_output,
     output reg [1:0] size_o,
     output reg enable_o,
     output reg rw_o,
@@ -20,8 +20,8 @@ module Mux_CU (
 );
     always@ (Shift_i, ALU_i, size_i, enable_i, rw_i, load_i, S_i, RF_i, sel) begin
         if(sel == 0) begin
-            Shift_o = Shift_i;
-            ALU_o = ALU_i;
+            Shift_output = Shift_i;
+            ALU_output = ALU_i;
             size_o = size_i;
             enable_o = enable_i;
             rw_o = rw_i;
@@ -29,8 +29,8 @@ module Mux_CU (
             S_o = S_i;
             RF_o = RF_i;
         end else begin      // NOP
-            Shift_o = 1'b0;
-            ALU_o = 4'b0000;
+            Shift_output = 1'b0;
+            ALU_output = 4'b0000;
             size_o = 2'b00;
             enable_o = 1'b0;
             rw_o = 1'b0;

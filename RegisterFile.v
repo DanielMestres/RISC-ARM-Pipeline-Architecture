@@ -21,11 +21,13 @@ module register (
         output reg [31:0]Qs,    // salida...
         input [31:0]Ds,         //lo que se va a guardar en el registro
         input E,                //enable del registro
+        input R, 
         input clock );
         
 
-    always @(posedge clock) 
-        if (E) Qs = Ds;
+    always @(posedge clock, R) 
+        if (R) Qs = 32'b00000000000000000000000000000000;
+        else if (E) Qs = Ds;
         
 
 endmodule
@@ -99,6 +101,7 @@ module registers16 (
     input Ld,                           //ld for the binary decoder
     input PCE,                          //PC enable
     input BL,                           //Branch/link true?
+    input R, 
     input [31:0] PCin,                  //R15 only written from the adress bus in IF stage
     input [31:0] PC_4_in,
     input [ 3:0] decode_input,          //binary decoder entry
@@ -114,27 +117,30 @@ module registers16 (
 
         decoder decode1 (decode_out, Ld, decode_input);
 
-        register register0 ( Q0, Ds, decode_out [0], clock);  
-        register register1 ( Q1, Ds, decode_out [1], clock);
-        register register2 ( Q2, Ds, decode_out [2], clock);
-        register register3 ( Q3, Ds, decode_out [3], clock);
-        register register4 ( Q4, Ds, decode_out [4], clock);
-        register register5 ( Q5, Ds, decode_out [5], clock);
-        register register6 ( Q6, Ds, decode_out [6], clock);
-        register register7 ( Q7, Ds, decode_out [7], clock);
-        register register8 ( Q8, Ds, decode_out [8], clock);
-        register register9 ( Q9, Ds, decode_out [9], clock);
-        register register10(Q10, Ds, decode_out[10], clock);
-        register register11(Q11, Ds, decode_out[11], clock);
-        register register12(Q12, Ds, decode_out[12], clock);
-        register register13(Q13, Ds, decode_out[13], clock);
+        register register0 ( Q0, Ds, decode_out [0], R, clock);  
+        register register1 ( Q1, Ds, decode_out [1], R, clock);
+        register register2 ( Q2, Ds, decode_out [2], R, clock);
+        register register3 ( Q3, Ds, decode_out [3], R, clock);
+        register register4 ( Q4, Ds, decode_out [4], R, clock);
+        register register5 ( Q5, Ds, decode_out [5], R, clock);
+        register register6 ( Q6, Ds, decode_out [6], R, clock);
+        register register7 ( Q7, Ds, decode_out [7], R, clock);
+        register register8 ( Q8, Ds, decode_out [8], R, clock);
+        register register9 ( Q9, Ds, decode_out [9], R, clock);
+        register register10(Q10, Ds, decode_out[10], R, clock);
+        register register11(Q11, Ds, decode_out[11], R, clock);
+        register register12(Q12, Ds, decode_out[12], R, clock);
+        register register13(Q13, Ds, decode_out[13], R, clock);
 
-        register register14(Q14, reg14Sel, r14En, clock);
+        register register14(Q14, reg14Sel, r14En, R, clock);
 
-        register register15(Q15, PCin, PCE, clock);
+        register register15(Q15, PCin, PCE, R, clock);
 
 
-        always@(BL, Ds, PC_4_in)begin //multiplexing for R14 special case
+        always@(BL, Ds, PC_4_in, R)begin // multiplexing for R14 special case
+            // if(R)begin 
+            //     reg14Sel = 0;
+            // end
             if(BL) begin 
                 reg14Sel = PC_4_in;
                 r14En = 1;
@@ -161,6 +167,7 @@ module fileregister (
     input       Ld,                     //the ld for the binary decoder
     input       PCE,                    //PC enable **********
     input       BL,                     //Branch/link true?**********
+    input       R,                      // Reset
     input [3:0] decode_input,           //binary decoder entry
     input       clock,                  //clock for registers
     input [31:0]PCin,                  //***********R15 only written from the adress bus in IF stage
@@ -189,7 +196,7 @@ module fileregister (
     wire [31:0] Q15;
 
     registers16 registers ( Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, 
-        Q12, Q13, Q14, Q15, Ld, PCE, BL, PCin, PC_4_in, decode_input, clock, Ds);
+        Q12, Q13, Q14, Q15, Ld, PCE, BL, R, PCin, PC_4_in, decode_input, clock, Ds);
     
     
     mux_16x1 mux1(Y1, S1, Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15);    
@@ -222,10 +229,11 @@ endmodule
 //     reg  [3:0]  SA;
 //     reg  [3:0]  SB;
 //     reg  [3:0]  S3;
+//     reg R;
 
 //     parameter simtime = 10000;
 
-//     fileregister fr(PCA, PCB, PC3, PCout, Ld, PCE, BL, decode_input, clock, PCin,PC_4_in, Ds, SA, SB, S3);
+//     fileregister fr(PCA, PCB, PC3, PCout, Ld, PCE, BL, R, decode_input, clock, PCin,PC_4_in, Ds, SA, SB, S3);
                     
 
 //     initial #simtime $finish;
@@ -233,6 +241,7 @@ endmodule
 //     initial fork 
 //         //Ld=0;
 //         Ld = 1;
+//         R=0;
 
 //         clock = 0;
 //         repeat (40) #1 begin
@@ -335,6 +344,7 @@ endmodule
 
 //         #24 begin
 //             //PC=PC4;
+//             R =1;
 //             decode_input++;
 //             Ds = 32'hC0C0C0C0;
 //             SA++;SB++;
