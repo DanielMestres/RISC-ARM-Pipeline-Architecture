@@ -73,7 +73,7 @@ module Phase_4(parameter PROGRAM_SIZE=11);
 /*              EX STAGE                */
 
 
-/*              MEME STAGE              */
+/*              MEM STAGE               */
 
 
 /*              WB STAGE                */
@@ -85,9 +85,20 @@ module Phase_4(parameter PROGRAM_SIZE=11);
 
 
 /*              INST. MODULES           */
+/*              Pipeline Reg            */
+    IFID_Register IFIDregister();
+    IDEX_Register IDEXregister();
+    EXMEM_Register EXMEMregister();
+    MEMWB_Register MEMWBregister();
+
+/*              Misc                    */
+    Control_Unit CU();
+    Mux_CU CU_mux();
+    HazardUnit Hazardunit();
+
 /*              IF STAGE                */
-    // Instantiate and precharge RAM
-    inst_ram256x8 ram1 (Inst_out, PC);
+    // Instantiate and precharge instruction RAM
+    inst_ram256x8 instRam(Inst_out, PC);
     initial begin
         fi = $fopen("Memory/ramintr.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
@@ -100,20 +111,36 @@ module Phase_4(parameter PROGRAM_SIZE=11);
             addr = 32'b00000000000000000000000000000000;
     end
 
-/*              ID STAGE                */
+    Mux IF_mux();
+    PC_4_Adder PC_adder();
+    Or IF_or();
 
+/*              ID STAGE                */
+    SE_4 se_4();
+    Adder ID_adder();
+    fileregister File_register();
+    Mux_4_1 ID_mux_A();
+    Mux_4_1 ID_mux_B();
+    Mux_4_1 ID_mux_C();
 
 /*              EX STAGE                */
+    ConditionHandler Condhandler();
+    Mux EX_mux_A();
+    ALU ALUmodule();
+    Shifter Shiftermodule();
+    FlagRegister Flagreg();
+    Mux EX_mux_B();
+    ConditionTester Condtester();
 
-
-/*              MEME STAGE              */
-
+/*              MEM STAGE               */
+    // Instantiate and precharge instruction RAM
+    data_ram256x8 dataRam();
+    Mux MEM_mux();
 
 /*              WB STAGE                */
-
+    Mux WB_mux();
 
 /*              TESTING                 */
-
     // Clk & Clr
     initial begin
         CLK = 1'b1;
@@ -128,5 +155,10 @@ module Phase_4(parameter PROGRAM_SIZE=11);
     end
 
     // Display & Monitor
-
+    initial begin
+        #5;
+        $display("\n    Phase 4 Simulation");
+        $display("PC Data_Mem_Addr_In R1 R2 R3 R5");
+        $monitor();
+    end
 endmodule
