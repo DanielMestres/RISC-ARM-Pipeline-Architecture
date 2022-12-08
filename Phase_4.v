@@ -13,7 +13,7 @@
 `include "memory/ram.v"         // Contains both inst and data mem modules
 `include "RegisterFile.v"
 `include "Support/Mux_4_1.v"
-`include "Support/Adder.v"
+`include "Support/Adder_Target_Addr.v"
 `include "Support/SE_4.v"
 
 // ID / EX Phase
@@ -33,7 +33,8 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
 
 /*              Pipeline Reg's          */
     // IFID Register
-    wire IFID_Inst_Out;
+    wire [31:0] IFID_Inst_Out;
+    // add new signals
 
     // IDEX Register
     wire IDEX_Imm_Shift_Out;
@@ -44,6 +45,11 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire IDEX_Load_Instr_Out;
     wire IDEX_S_Enable_Out;
     wire IDEX_RF_Enable_Out;
+    wire [31:0] IDEX_RegFile_MuxPortC_Out,
+    wire [31:0] IDEX_RegFile_MuxPortB_Out,
+    wire [31:0] IDEX_RegFile_MuxPortA_Out,
+    wire [11:0] IDEX_Shifter_Amount_Out,
+    wire [3:0] IDEX_Rd_Out,
 
     // EXMEM Register
     wire [1:0] EXMEM_Mem_Size_Out;
@@ -53,6 +59,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire EXMEM_RF_Enable_Out;
     wire [31:0] EXMEM_RegFile_PortC_Out;
     wire [31:0] EXMEM_Alu_Out;
+    wire [3:0] EXMEM_Rd_Out;
 
     // MEMWB Register
     wire MEMWB_Load_Instr_Out;
@@ -126,7 +133,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire [31:0] SE4_Out;
     
     // IF_Adder
-    wire [31:0] IF_Adder_Out;
+    wire [31:0] IF_Adder_Offset_Out;
 
     // PA_Mux
     wire [31:0] MUXPA_Out;
