@@ -115,7 +115,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire INRAM_Inst_Out;
 
     // IF_mux
-    wire MUXIF_PC_Out;
+    wire [31:0] MUXIF_PC_Out;
 
     // PC_Adder
     wire PCADDER_PC_4_Out;
@@ -187,9 +187,10 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     reg CLR;
 
 /*--------------INST. MODULES-----------*/
+// Outputs, Inputs
 
 /*              Pipeline Reg            */
-    IFID_Register IFIDregister(IFID_Inst_Out, IFID_PC4_Out, IFID_Offset_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IFID_Shift_Amount_Out, IFID_Cond_Codes, INRAM_Inst_Out, PCADDER_PC_4_Out, /* LE, */ CLK, CLR);
+    IFID_Register IFIDregister(IFID_Inst_Out, IFID_PC4_Out, IFID_Offset_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IFID_Shift_Amount_Out, IFID_Cond_Codes, INRAM_Inst_Out, PCADDER_PC_4_Out, /* LE, */ CLK, ORIF_Reset_Out);
     IDEX_Register IDEXregister(IDEX_Imm_Shift_Out, IDEX_ALU_Op_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, IDEX_RegFile_MuxPortB_Out, IDEX_RegFile_MuxPortA_Out, IDEX_Shifter_Amount_Out, IDEX_Rd_Out, MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_RF_Enable_Out, CLK, CLR);
     EXMEM_Register EXMEMregister(EXMEM_Mem_Size_Out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, EXMEM_RegFile_PortC_Out, EXMEM_Alu_Out, EXMEM_Rd_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, ALU_Out, IDEX_Rd_Out, CLK, CLR);
     MEMWB_Register MEMWBregister(MEMWB_Load_Instr_Out, MEMWB_RF_Enable_Out, MEMWB_DATA_MEM_Out, MEMWB_ALU_MUX_Out, MEMWB_RD_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, DATA_Mem_out, EXMEM_Alu_Out, EXMEM_Rd_Out, CLK, CLR);
@@ -203,7 +204,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     // Instantiate and precharge instruction RAM
     inst_ram256x8 instRam(INRAM_Inst_Out, RFILE_ProgC_Out);
     initial begin
-        fi = $fopen("Memory/testcode_arm_ppu_1.txt","r");          // Input file
+        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fi)) begin 
                 code = $fscanf(fi, "%b", data);
@@ -214,9 +215,9 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
             addr = 32'b00000000000000000000000000000000;
     end
 
-    Mux IF_mux();
-    PC_4_Adder PC_adder();
-    Or IF_or();
+    Mux IF_mux(MUXIF_PC_Out, PCADDER_PC_4_Out, IF_Adder_Offset_Out, CONDH_T_Addr_Out);
+    PC_4_Adder PC_adder(PCADDER_PC_4_Out, RFILE_ProgC_Out);
+    Or IF_or(ORIF_Reset_Out, CONDH_T_Addr_Out, CLR);
 
 /*              ID STAGE                */
     SE_4 se_4();
