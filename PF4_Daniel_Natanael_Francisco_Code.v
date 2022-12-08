@@ -132,10 +132,10 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     // reg LE = 1'b1; ???
 
     // SE_4
-    wire [31:0] SE4_Out;
+    wire [23:0] SE4_Out;
     
     // IF_Adder
-    wire [31:0] IF_Adder_Offset_Out;
+    wire [31:0] ID_Adder_Offset_Out;
 
     // PA_Mux
     wire [31:0] MUXPA_Out;
@@ -201,27 +201,16 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out, CLK);
 
 /*              IF STAGE                */
-    // Instantiate and precharge instruction RAM
+    // Inst RAM
     inst_ram256x8 instRam(INRAM_Inst_Out, RFILE_ProgC_Out);
-    initial begin
-        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
-        addr = 32'b00000000000000000000000000000000;
-            while (!$feof(fi)) begin 
-                code = $fscanf(fi, "%b", data);
-                ram1.Mem[addr] = data;
-                addr = addr + 1;
-            end
-        $fclose(fi);
-            addr = 32'b00000000000000000000000000000000;
-    end
 
     Mux IF_mux(MUXIF_PC_Out, PCADDER_PC_4_Out, IF_Adder_Offset_Out, CONDH_T_Addr_Out);
     PC_4_Adder PC_adder(PCADDER_PC_4_Out, RFILE_ProgC_Out);
     Or IF_or(ORIF_Reset_Out, CONDH_T_Addr_Out, CLR);
 
 /*              ID STAGE                */
-    SE_4 se_4();
-    Adder ID_adder();
+    SE_4 se_4(SE4_Out, IFID_Offset_Out);
+    Adder_Target_Addr ID_adder(ID_Adder_Offset_Out, SE4_Out, IFID_PC4_Out);
     fileregister File_register();
     Mux_4_1 ID_mux_A();
     Mux_4_1 ID_mux_B();
@@ -245,6 +234,19 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     Mux WB_mux();
 
 /*--------------TESTING-----------------*/
+    // Precharge RAM
+    initial begin
+        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
+        addr = 32'b00000000000000000000000000000000;
+            while (!$feof(fi)) begin 
+                code = $fscanf(fi, "%b", data);
+                ram1.Mem[addr] = data;
+                addr = addr + 1;
+            end
+        $fclose(fi);
+            addr = 32'b00000000000000000000000000000000;
+    end
+
     // Clk & Clr
     initial begin
         CLK = 1'b1;
