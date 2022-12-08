@@ -9,6 +9,7 @@ module IFID_Register (
     output reg [3:0] Cond_Codes,
     input [31:0] IFID_In,
     input [31:0] PC4_In,
+    // ADD LE INPUT
     input CLK,
     input CLR
 );

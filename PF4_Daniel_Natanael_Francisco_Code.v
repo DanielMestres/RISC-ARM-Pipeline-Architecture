@@ -49,13 +49,13 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire IDEX_Mem_Enable_Out;
     wire IDEX_Mem_RW_Out;
     wire IDEX_Load_Instr_Out;
-    wire IDEX_S_Enable_Out;
+    // wire IDEX_S_Enable_Out;  ???
     wire IDEX_RF_Enable_Out;
-    wire [31:0] IDEX_RegFile_MuxPortC_Out,
-    wire [31:0] IDEX_RegFile_MuxPortB_Out,
-    wire [31:0] IDEX_RegFile_MuxPortA_Out,
-    wire [11:0] IDEX_Shifter_Amount_Out,
-    wire [3:0] IDEX_Rd_Out,
+    wire [31:0] IDEX_RegFile_MuxPortC_Out;
+    wire [31:0] IDEX_RegFile_MuxPortB_Out;
+    wire [31:0] IDEX_RegFile_MuxPortA_Out;
+    wire [11:0] IDEX_Shifter_Amount_Out;
+    wire [3:0] IDEX_Rd_Out;
 
     // EXMEM Register
     wire [1:0] EXMEM_Mem_Size_Out;
@@ -94,7 +94,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire [1:0] MUXCU_Size_Out;
     wire MUXCU_Mem_Enable_Out;
     wire MUXCU_Mem_RW_Out;
-    wire MUXCU_Inst_Out;
+    wire MUXCU_Load_Inst_Out;
     wire MUXCU_S_Out;
     wire MUXCU_RF_Enable_Out;
     // wire select_mux; MOVE ???
@@ -106,9 +106,9 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire HAZARD_MUXPA_select;
     wire HAZARD_MUXPB_select;
     wire HAZARD_MUXPC_select;
-    wire HAZARD_LE_IfId;
-    wire HAZARD_PCenable;
     wire HAZARD_NOP_insertion_select;
+    wire HAZARD_PCenable;
+    wire HAZARD_LE_IfId;
 
 /*              IF STAGE                */
     // Inst ram
@@ -173,7 +173,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire CTESTER_True_Out;
 
 /*              MEM STAGE               */
-    wire [31:0] Data_mem_out;
+    wire [31:0] DATA_Mem_out;
     wire [31:0] MUX_data_mem_out;
 
 /*              WB STAGE                */
@@ -182,26 +182,26 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
 /*--------------INTERNAL----------------*/
     integer fi, code;
     reg [31:0] data;
+    reg [31:0] addr;
     reg CLK;
     reg CLR;
-
 
 /*--------------INST. MODULES-----------*/
 
 /*              Pipeline Reg            */
-    IFID_Register IFIDregister();
-    IDEX_Register IDEXregister();
-    EXMEM_Register EXMEMregister();
-    MEMWB_Register MEMWBregister();
+    IFID_Register IFIDregister(IFID_Inst_Out, IFID_PC4_Out, IFID_Offset_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IFID_Shift_Amount_Out, IFID_Cond_Codes, INRAM_Inst_Out, PCADDER_PC_4_Out, /* LE, */ CLK, CLR);
+    IDEX_Register IDEXregister(IDEX_Imm_Shift_Out, IDEX_ALU_Op_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, IDEX_RegFile_MuxPortB_Out, IDEX_RegFile_MuxPortA_Out, IDEX_Shifter_Amount_Out, IDEX_Rd_Out, MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_RF_Enable_Out, CLK, CLR);
+    EXMEM_Register EXMEMregister(EXMEM_Mem_Size_Out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, EXMEM_RegFile_PortC_Out, EXMEM_Alu_Out, EXMEM_Rd_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, ALU_Out, IDEX_Rd_Out, CLK, CLR);
+    MEMWB_Register MEMWBregister(MEMWB_Load_Instr_Out, MEMWB_RF_Enable_Out, MEMWB_DATA_MEM_Out, MEMWB_ALU_MUX_Out, MEMWB_RD_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, DATA_Mem_out, EXMEM_Alu_Out, EXMEM_Rd_Out, CLK, CLR);
 
 /*              Misc                    */
-    Control_Unit CU();
-    Mux_CU CU_mux();
-    HazardUnit Hazardunit();
+    Control_Unit CU(CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, IFID_Inst_Out);
+    Mux_CU CU_mux(MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, ORCU_Out);
+    HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out, CLK);
 
 /*              IF STAGE                */
     // Instantiate and precharge instruction RAM
-    inst_ram256x8 instRam(Inst_out, PC);
+    inst_ram256x8 instRam(INRAM_Inst_Out, RFILE_ProgC_Out);
     initial begin
         fi = $fopen("Memory/testcode_arm_ppu_1.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;

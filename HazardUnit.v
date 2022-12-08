@@ -1,21 +1,21 @@
 module HazardUnit (
-    input [3:0] RW_EX,      // Devuelve el registro destino desde
-    input [3:0] RW_MEM,
-    input [3:0] RW_WB,
-    input [3:0] RA_ID,
-    input [3:0] RB_ID,
-    input [3:0] C_ID,       // Store case, still not in use
-    input enable_LD_EX,
-    input enable_RF_EX,
-    input enable_RF_MEM,
-    input enable_RF_WB,
-    input CLK,
     output reg [1:0] ISA,
     output reg [1:0] ISB,
     output reg [1:0] ISD,
     output reg C_Unit_MUX,
     output reg HZld,
-    output reg IF_ID_ld
+    output reg IF_ID_ld,
+    input [3:0] RW_EX,      // Devuelve el registro destino desde
+    input [3:0] RW_MEM,
+    input [3:0] RW_WB,
+    input [3:0] RA_ID,
+    input [3:0] RB_ID,
+    input [3:0] RC_ID,       // Store case, still not in use
+    input enable_LD_EX,
+    input enable_RF_EX,
+    input enable_RF_MEM,
+    input enable_RF_WB,
+    input CLK,
 );
 
 // RN y RM en ID es igual a RD en EX,MEM o RW, Data forward el RD a ID

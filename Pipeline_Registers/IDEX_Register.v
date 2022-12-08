@@ -5,7 +5,7 @@ module IDEX_Register (
     output reg Enable_Out,
     output reg rw_Out,
     output reg Load_Out,
-    output reg S_Out,
+    // output reg S_Out, ???
     output reg rf_Out,
     output reg [31:0] RegFile_MuxPortC_Out,
     output reg [31:0] RegFile_MuxPortB_Out,
@@ -18,7 +18,7 @@ module IDEX_Register (
     input Enable_In,
     input rw_In,
     input Load_In,
-    input S_In,
+    // input S_In,  ???
     input rf_In,
     input [31:0] RegFile_MuxPortC_In,
     input [31:0] RegFile_MuxPortB_In,
