@@ -34,7 +34,13 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
 /*              Pipeline Reg's          */
     // IFID Register
     wire [31:0] IFID_Inst_Out;
-    // add new signals
+    wire [31:0] IFID_PC4_Out;
+    wire [23:0] IFID_Offset_Out;
+    wire [3:0] IFID_Rn_Out;
+    wire [3:0] IFID_Rm_Out;
+    wire [3:0] IFID_Rd_Out;
+    wire [11:0] IFID_Shift_Amount_Out;
+    wire [3:0] IFID_Cond_Codes;
 
     // IDEX Register
     wire IDEX_Imm_Shift_Out;
@@ -97,14 +103,12 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire ORCU_Out;
 
     // Hazard Forwarding Unit
-    wire MUXPA_select;
-    wire MUXPB_select;
-    wire MUXPC_select;
-    wire LE_IfId;
-    wire PCenable;
-    wire NOP_insertion_select;
-
-
+    wire HAZARD_MUXPA_select;
+    wire HAZARD_MUXPB_select;
+    wire HAZARD_MUXPC_select;
+    wire HAZARD_LE_IfId;
+    wire HAZARD_PCenable;
+    wire HAZARD_NOP_insertion_select;
 
 /*              IF STAGE                */
     // Inst ram
@@ -126,8 +130,6 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire [31:0] RFILE_PC_Out;
     wire [31:0] RFILE_ProgC_Out;
     // reg LE = 1'b1; ???
-    // reg CLK;
-    // reg CLR;
 
     // SE_4
     wire [31:0] SE4_Out;
@@ -174,14 +176,14 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     wire [31:0] Data_mem_out;
     wire [31:0] MUX_data_mem_out;
 
-
 /*              WB STAGE                */
     wire [31:0] MUXWB_out;
-
 
 /*--------------INTERNAL----------------*/
     integer fi, code;
     reg [31:0] data;
+    reg CLK;
+    reg CLR;
 
 
 /*--------------INST. MODULES-----------*/
