@@ -29,7 +29,7 @@
 `include "Support/FlagMux.v"
 `include "HazardUnit.v"
 
-module Phase_4 #( parameter PROGRAM_SIZE=11 );
+module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*--------------In's / Out's------------*/
 
 /*              Pipeline Reg's          */
@@ -244,7 +244,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
 /*--------------TESTING-----------------*/
     // Precharge RAM
     initial begin
-        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
+        fi = $fopen("memory/ramintr.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fi)) begin 
                 code = $fscanf(fi, "%b", data);
@@ -272,7 +272,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
     initial begin
         #5;
         $display("\n    Phase 4 Simulation");
-        $display("PC Data_Mem_Addr_In R1 R2 R3 R5");
-        $monitor();
+        $display("         PC Data_Mem_Addr_In R1 R2 R3 R5");
+        $monitor("%d", RFILE_ProgC_Out);
     end
 endmodule
