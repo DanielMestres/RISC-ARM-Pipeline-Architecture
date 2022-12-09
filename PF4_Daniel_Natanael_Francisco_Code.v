@@ -199,6 +199,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=11 );
 
 /*              Misc                    */
     Control_Unit CU(CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, IFID_Inst_Out);
+    Or CU_or(ORCU_Out, CTESTER_True_Out,  HAZARD_NOP_insertion_select);
     // REVISE SELECT
     Mux_CU CU_mux(MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, ORCU_Out);
     HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out, CLK);
