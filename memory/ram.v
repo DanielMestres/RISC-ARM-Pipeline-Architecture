@@ -12,7 +12,7 @@ module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address);
 endmodule                             
 
 
-// DATA MEMORY
+// DATA MEMORY              Enable = RW
 module data_ram256x8(output reg[31:0] DataOut, input Enable, RW, input[31:0] Address, input[31:0] DataIn, input [1:0] Size);
     reg[7:0] Mem[0:255]; // 256 8-byte addresses
 

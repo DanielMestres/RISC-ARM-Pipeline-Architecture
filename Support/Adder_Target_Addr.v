@@ -1,4 +1,4 @@
-module Adder_PC_Offset (
+module Adder_Target_Addr (
     output reg [31:0] Output,
     input [23:0] inputA,
     input [31:0] inputB

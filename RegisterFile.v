@@ -159,23 +159,23 @@ endmodule
 
 /***REGISTER FILE*****/
 module fileregister (
-    output     [31:0]Y1,
-    output     [31:0]Y2,
-    output     [31:0]Y3,
+    output     [31:0]Y1,                // PA
+    output     [31:0]Y2,                // PB
+    output     [31:0]Y3,                // PC
     output     [31:0]PCout,             //*********Dedicated output for R15
 
-    input       Ld,                     //the ld for the binary decoder
+    input       Ld,                     //the ld for the binary decoder (rf enable)
     input       PCE,                    //PC enable **********
     input       BL,                     //Branch/link true?**********
-    input       R,                      // Reset
-    input [3:0] decode_input,           //binary decoder entry
+    input       R,                      // Reset, CLR
+    input [3:0] decode_input,           //binary decoder entry, RW
     input       clock,                  //clock for registers
     input [31:0]PCin,                  //***********R15 only written from the adress bus in IF stage
     input [31:0]PC_4_in,
-    input [31:0]Ds,                     //a register input 
-    input [3:0] S1,                     //multiplexer 1 select
-    input [3:0] S2,                     //multiplexer 2 select
-    input [3:0] S3                      //multiplexer 3 select
+    input [31:0]Ds,                     //a register input PW
+    input [3:0] S1,                     //multiplexer 1 select RA
+    input [3:0] S2,                     //multiplexer 2 select RB
+    input [3:0] S3                      //multiplexer 3 select RC
     );
 
     wire [31:0] Q0; 

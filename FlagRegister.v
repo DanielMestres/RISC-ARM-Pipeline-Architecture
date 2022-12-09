@@ -5,7 +5,7 @@ module FlagRegister(
     input S_in,
     input CLK,CLR
 );
-	always@(posedge CLK)
+	always@(posedge CLK, CLR)   // REVISE CLR
     begin
         if(CLR)
         begin
