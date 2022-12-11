@@ -3,6 +3,6 @@ module SE_4 (
     input [23:0] in
 );
     always@ (in) begin
-        Output = in * 24'b000000000000000000000100; // * 4
+        Output = in * 4; // * 4
     end
 endmodule

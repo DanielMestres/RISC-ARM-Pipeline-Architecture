@@ -223,9 +223,9 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*              EX STAGE                */
     ConditionHandler Condhandler(CONDH_T_Addr_Out, CONDH_BL_Reg_Out, CU_ID_B_Instr_Out, CTESTER_True_Out, CU_ID_BL_Instr_Out);
     Mux EX_mux_A(MUXALU_Out, SHIFTER_Out, IDEX_RegFile_MuxPortB_Out, IDEX_Imm_Shift_Out); // ALU B INPUT MUX
-    // INPUTS FIRST !!! edit: carry anadido en el diagrama -n
+    // INPUTS FIRST !!!
     ALU ALUmodule(IDEX_RegFile_MuxPortA_Out, MUXALU_Out, SHIFTER_Carry_Out, IDEX_ALU_Op_Out, ALU_Out, ALU_Flags_Out);
-    // INPUTS FIRST !!! edit: type anadido -n
+    // INPUTS FIRST !!!
     Shifter Shiftermodule(IDEX_RegFile_MuxPortB_Out, IDEX_Shifter_Amount_Out, IDEX_SHIFTER_Type_Out, SHIFTER_Out, SHIFTER_Carry_Out);
     // ADD CARRY OUT IN DIAGRAM AND REVISE :::::: a donde sale el carry? -n
     FlagRegister Flagreg(FREG_Cond_Codes_Out, FREG_Carry_Out, ALU_Flags_Out, MUXCU_S_Out, CLK, CLR);
@@ -271,7 +271,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     initial begin
         #5;
         $display("\n    Phase 4 Simulation");
-        $display("         PC Data_Mem_Addr_In R1 R2 R3 R5");
-        $monitor("%d", RFILE_ProgC_Out);
+        $display("         PC IFID_IN                           Data_Mem_Addr_In R1 R2 R3 R5");
+        $monitor("%d  %b", RFILE_ProgC_Out, INRAM_Inst_Out);
     end
 endmodule
