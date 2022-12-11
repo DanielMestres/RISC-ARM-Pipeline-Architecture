@@ -200,7 +200,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*              Misc                    */
     Control_Unit CU(CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, IFID_Inst_Out);
     Or CU_or(ORCU_Out, CTESTER_True_Out,  HAZARD_NOP_insertion_select);
-    // REVISE SELECT
+    // REVISE SELECT edit: creo que esta bien? (-nata)
     Mux_CU CU_mux(MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, ORCU_Out);
     HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out, CLK);
 
@@ -223,18 +223,17 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*              EX STAGE                */
     ConditionHandler Condhandler(CONDH_T_Addr_Out, CONDH_BL_Reg_Out, CU_ID_B_Instr_Out, CTESTER_True_Out, CU_ID_BL_Instr_Out);
     Mux EX_mux_A(MUXALU_Out, SHIFTER_Out, IDEX_RegFile_MuxPortB_Out, IDEX_Imm_Shift_Out); // ALU B INPUT MUX
-    // INPUTS FIRST !!! ADD CARRY IN DIAGRAM
+    // INPUTS FIRST !!! edit: carry anadido en el diagrama -n
     ALU ALUmodule(IDEX_RegFile_MuxPortA_Out, MUXALU_Out, SHIFTER_Carry_Out, IDEX_ALU_Op_Out, ALU_Out, ALU_Flags_Out);
-    // INPUTS FIRST !!! ADD TYPE IN on CODE AND DIAGRAM
+    // INPUTS FIRST !!! edit: type anadido -n
     Shifter Shiftermodule(IDEX_RegFile_MuxPortB_Out, IDEX_Shifter_Amount_Out, IDEX_SHIFTER_Type_Out, SHIFTER_Out, SHIFTER_Carry_Out);
-    // ADD CARRY OUT IN DIAGRAM AND REVISE
+    // ADD CARRY OUT IN DIAGRAM AND REVISE :::::: a donde sale el carry? -n
     FlagRegister Flagreg(FREG_Cond_Codes_Out, FREG_Carry_Out, ALU_Flags_Out, MUXCU_S_Out, CLK, CLR);
     FlagMux EX_mux_B(MUXFREG_Out, ALU_Flags_Out, FREG_Cond_Codes_Out, MUXCU_S_Out);
     ConditionTester Condtester(CTESTER_True_Out, IFID_Cond_Codes, MUXFREG_Out);
 
 /*              MEM STAGE               */
     // Instantiate and precharge instruction RAM
-    // ADD ENABLE IN DIAGRAM
     data_ram256x8 dataRam(DATA_Mem_out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Alu_Out, EXMEM_RegFile_PortC_Out, EXMEM_Mem_Size_Out);
     Mux MEM_mux(MUX_data_mem_out, DATA_Mem_out, EXMEM_Alu_Out, EXMEM_Load_Instr_Out);
 

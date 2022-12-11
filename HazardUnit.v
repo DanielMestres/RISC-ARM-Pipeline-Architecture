@@ -2,7 +2,7 @@ module HazardUnit (
     output reg [1:0] ISA,
     output reg [1:0] ISB,
     output reg [1:0] ISD,   // ISC
-    output reg C_Unit_MUX,
+    output reg C_Unit_MUX,  // NOP (para el OR del CU)
     output reg HZld,
     output reg IF_ID_ld,
     input [3:0] RW_EX,      // Devuelve el registro destino desde
