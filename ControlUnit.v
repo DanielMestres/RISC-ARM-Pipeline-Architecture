@@ -20,7 +20,7 @@ module Control_Unit (
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
                 ID_shift_imm = 1'b1;
-                mem_size = 1'b0;
+                mem_size = 2'b00;
                 mem_enable = 1'b0;
                 mem_RW = 1'b0;
                 ID_Load_Inst = 1'b0;
@@ -32,7 +32,7 @@ module Control_Unit (
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
                 ID_shift_imm = 1'b0;
-                mem_size = 1'b0;
+                mem_size = 2'b00;
                 mem_enable = 1'b0;
                 mem_RW = 1'b0;
                 ID_Load_Inst = 1'b0;
@@ -97,7 +97,7 @@ module Control_Unit (
                 ID_Load_Inst = 1'b0;  
                 ID_RF_enable = 1'b0;
                 mem_RW = 1'b0;
-                mem_size = 1'b0;                 
+                mem_size = 2'b00;                 
                 // Branch
                 if(I[24] == 1'b0) begin 
                     B_L = 1'b0; 
@@ -118,6 +118,7 @@ module Control_Unit (
             ID_B_instr = 1'b0;
             ID_shift_imm = 1'b0;
             mem_size = 2'b00;
+            B_L = 1'b0; 
             mem_enable = 1'b0;
             mem_RW = 1'b0;
             ID_Load_Inst = 1'b0;

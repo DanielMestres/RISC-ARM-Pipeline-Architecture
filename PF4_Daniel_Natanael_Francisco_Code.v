@@ -182,7 +182,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     wire [31:0] MUXWB_out;
 
 /*--------------INTERNAL----------------*/
-    integer fi, code;
+    integer fi, fm, Instcode, Datacode;
     reg [31:0] data;
     reg [31:0] addr;
     reg CLK;
@@ -241,17 +241,30 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     Mux WB_mux(MUXWB_out, MEMWB_DATA_MEM_Out, MEMWB_ALU_MUX_Out, MEMWB_Load_Instr_Out);
 
 /*--------------TESTING-----------------*/
-    // Precharge RAM
+    // Precharge inst RAM
     initial begin
-        fi = $fopen("memory/ramintr.txt","r");          // Input file
+        fi = $fopen("memory/testcode_0.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fi)) begin 
-                code = $fscanf(fi, "%b", data);
+                Instcode = $fscanf(fi, "%b", data);
                 instRam.Mem[addr] = data;
-                addr = addr + 1;
+                addr = addr + 1'b1;
             end
         $fclose(fi);
-            addr = 32'b00000000000000000000000000000000;
+            addr = #1 32'b00000000000000000000000000000000;
+    end
+
+    // Precharge data RAM
+    initial begin
+        fm = $fopen("memory/testcode_0.txt","r");          // Input file
+        addr = 32'b00000000000000000000000000000000;
+            while (!$feof(fm)) begin 
+                Datacode = $fscanf(fm, "%b", data);
+                dataRam.Mem[addr] = data;
+                addr = addr + 1'b1;
+            end
+        $fclose(fm);
+            addr =  #1 32'b00000000000000000000000000000000;
     end
 
     // Clk & Clr
@@ -261,9 +274,9 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
         #1 CLR = ~CLR;
         repeat(PROGRAM_SIZE) begin
         #5;
-        CLK = ~CLK;
-        CLK = ~CLK;
         CLR = 1'b0;
+        CLK = ~CLK;
+        CLK = ~CLK;
         end
     end
 
@@ -271,7 +284,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     initial begin
         #5;
         $display("\n    Phase 4 Simulation");
-        $display("         PC IFID_IN                           Data_Mem_Addr_In R1 R2 R3 R5");
-        $monitor("%d  %b", RFILE_ProgC_Out, INRAM_Inst_Out);
+        $display("         PC IFID_IN                           IFID_OUT                           Data_Mem_Addr_In R1 R2 R3 R5");
+        $monitor("%d  %b  %b", RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out);
     end
 endmodule

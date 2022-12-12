@@ -3,11 +3,14 @@ module Adder_Target_Addr (
     input [23:0] inputA,
     input [31:0] inputB
 );
-    reg [23:0] twoComp;
-
     always@ (inputA, inputB) begin
-        // Calculate two's comp; invert and add 1
-        twoComp = ~(inputA) + 1;
-        Output = twoComp + inputB;
+        // Calculate two's comp;
+        Output = 32'b00000000000000000000000000000000;
+        if(inputA[23]==1) begin
+            Output[23:0] = ~inputA;
+            Output = inputB - (Output - 1'b1);
+        end else begin
+            Output = inputA + inputB;
+        end
     end
 endmodule
