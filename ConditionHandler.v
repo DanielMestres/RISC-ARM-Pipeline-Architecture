@@ -8,7 +8,7 @@ module ConditionHandler (
 
     always@(B, Cond_true, BL) begin
         T_address = 1'b0;
-        BL_reg =1'b0;
+        BL_reg = 1'b0;
         if((B) && (Cond_true)) begin
             T_address = 1'b1;
             if(BL) begin

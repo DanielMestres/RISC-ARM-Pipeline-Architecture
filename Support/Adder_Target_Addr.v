@@ -8,7 +8,7 @@ module Adder_Target_Addr (
         Output = 32'b00000000000000000000000000000000;
         if(inputA[23]==1) begin
             Output[23:0] = ~inputA;
-            Output = inputB - (Output - 1'b1);
+            Output = inputB - (Output - 1'b1); // ?? +
         end else begin
             Output = inputA + inputB;
         end

@@ -22,12 +22,12 @@ module register (
         input [31:0]Ds,         //lo que se va a guardar en el registro
         input E,                //enable del registro
         input R, 
-        input clock );
+        input clock 
+    );
         
-
     always @(posedge clock, posedge R) 
-        if (R) Qs <= 32'b00000000000000000000000000000000;
-        else if (E) Qs <= Ds;
+        if (R) Qs = 32'b00000000000000000000000000000000;
+        else if (E) Qs = Ds;
         
 
 endmodule
@@ -101,13 +101,12 @@ module registers16 (
     input Ld,                           //ld for the binary decoder
     input PCE,                          //PC enable
     input BL,                           //Branch/link true?
-    input R, 
     input [31:0] PCin,                  //R15 only written from the adress bus in IF stage
     input [31:0] PC_4_in,
     input [ 3:0] decode_input,          //binary decoder entry
     input clock,                        //clock for registers
-    input [31:0]Ds                      //a register input 
-
+    input [31:0]Ds,                      //a register input 
+    input R
     );
     
         wire [15:0] decode_out;
@@ -138,9 +137,6 @@ module registers16 (
 
 
         always@(BL, Ds, PC_4_in, R)begin // multiplexing for R14 special case
-            // if(R)begin 
-            //     reg14Sel = 0;
-            // end
             if(BL) begin 
                 reg14Sel = PC_4_in;
                 r14En = 1;
@@ -149,10 +145,7 @@ module registers16 (
                 reg14Sel = Ds;
                 r14En = decode_out[14];
             end
-
     end
-    
-
 endmodule
 
 
@@ -167,15 +160,15 @@ module fileregister (
     input       Ld,                     //the ld for the binary decoder (rf enable)
     input       PCE,                    //PC enable **********
     input       BL,                     //Branch/link true?**********
-    input       R,                      // Reset, CLR
     input [3:0] decode_input,           //binary decoder entry, RW
-    input       clock,                  //clock for registers
     input [31:0]PCin,                  //***********R15 only written from the adress bus in IF stage
     input [31:0]PC_4_in,
     input [31:0]Ds,                     //a register input PW
     input [3:0] S1,                     //multiplexer 1 select RA
     input [3:0] S2,                     //multiplexer 2 select RB
-    input [3:0] S3                      //multiplexer 3 select RC
+    input [3:0] S3,                      //multiplexer 3 select RC
+    input       R,                      // Reset, CLR
+    input       clock                  //clock for registers
     );
 
     wire [31:0] Q0; 
@@ -196,7 +189,7 @@ module fileregister (
     wire [31:0] Q15;
 
     registers16 registers ( Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, 
-        Q12, Q13, Q14, Q15, Ld, PCE, BL, R, PCin, PC_4_in, decode_input, clock, Ds);
+        Q12, Q13, Q14, Q15, Ld, PCE, BL, PCin, PC_4_in, decode_input, clock, Ds, R);
     
     
     mux_16x1 mux1(Y1, S1, Q0, Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10, Q11, Q12, Q13, Q14, Q15);    

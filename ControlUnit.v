@@ -12,7 +12,18 @@ module Control_Unit (
     input [31:0] I
 );
     always@ (I) begin
-        case(I[27:25])
+        if(I == 32'b00000000000000000000000000000000) begin    // NOP
+            S = 1'b0;
+            ID_ALU_Op = 4'b0000;
+            ID_RF_enable = 1'b0;
+            ID_B_instr = 1'b0;
+            ID_shift_imm = 1'b0;
+            mem_size = 2'b00;
+            B_L = 1'b0; 
+            mem_enable = 1'b0;
+            mem_RW = 1'b0;
+            ID_Load_Inst = 1'b0;
+        end else case(I[27:25])
             3'b000:begin        // Data Processing Imm Shift
                 S = I[20];
                 ID_ALU_Op = I[24:21];
@@ -43,17 +54,16 @@ module Control_Unit (
                 ID_Load_Inst = I[20]; 
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
-                mem_size = I[22:21];
+                mem_enable = 1'b1;
+                mem_size = I[22:21];    // ???
                 // Store
                 if(I[20] == 1'b0) begin 
                     ID_RF_enable = 1'b0;
-                    mem_enable = 1'b1;
                     mem_RW = 1'b1;
                 end
                 // Load
                 else begin
                     ID_RF_enable = 1'b1; 
-                    mem_enable = 1'b0;
                     mem_RW = 1'b0;
                 end 
                 if(I[23] == 1) begin
@@ -70,6 +80,7 @@ module Control_Unit (
                 ID_shift_imm = 1'b0; 
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
+                mem_enable = 1'b1;
                 // plus sign
                 if(I[23]== 1'b1) begin 
                     ID_ALU_Op = 4'b0100;
@@ -99,29 +110,14 @@ module Control_Unit (
                 mem_RW = 1'b0;
                 mem_size = 2'b00;                 
                 // Branch
-                if(I[24] == 1'b0) begin 
-                    B_L = 1'b0; 
-                    ID_ALU_Op = 4'b0010;
+                if(I[24] == 1'b0) begin // ???
+                    B_L = 1'b0;
                 end 
                 else begin 
                     // Link 
                     B_L = 1'b1;
-                    ID_ALU_Op = 4'b0100;
                 end
             end
         endcase
-
-        if(I == 32'b00000000000000000000000000000000) begin    // NOP
-            S = 1'b0;
-            ID_ALU_Op = 4'b0000;
-            ID_RF_enable = 1'b0;
-            ID_B_instr = 1'b0;
-            ID_shift_imm = 1'b0;
-            mem_size = 2'b00;
-            B_L = 1'b0; 
-            mem_enable = 1'b0;
-            mem_RW = 1'b0;
-            ID_Load_Inst = 1'b0;
-        end
     end
 endmodule

@@ -7,6 +7,7 @@
 // Control Unit
 `include "ControlUnit.v"
 `include "Support/Mux_CU.v"
+`include "Support/Or_Nor.v"
 
 // IF / ID Phase
 `include "Support/PC_4_Adder.v"
@@ -166,7 +167,6 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 
     // Flag Register
     wire [3:0] FREG_Cond_Codes_Out;
-    wire FREG_Carry_Out;    // REMOVE ???
 
     // Flag Register Mux
     wire [3:0] MUXFREG_Out;
@@ -199,10 +199,10 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 
 /*              Misc                    */
     Control_Unit CU(CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, IFID_Inst_Out);
-    Or CU_or(ORCU_Out, CTESTER_True_Out,  HAZARD_NOP_insertion_select);
+    Or_Nor CU_or(ORCU_Out, CTESTER_True_Out,  HAZARD_NOP_insertion_select);
     // REVISE SELECT edit: creo que esta bien? (-nata)
     Mux_CU CU_mux(MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, ORCU_Out);
-    HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out, CLK);
+    HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out);
 
 /*              IF STAGE                */
     // Inst RAM
@@ -215,7 +215,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*              ID STAGE                */
     SE_4 se_4(SE4_Out, IFID_Offset_Out);
     Adder_Target_Addr ID_adder(ID_Adder_Offset_Out, SE4_Out, IFID_PC4_Out);
-    fileregister File_register(RFILE_PA_Out, RFILE_PB_Out, RFILE_PC_Out, RFILE_ProgC_Out, MEMWB_RF_Enable_Out, HAZARD_PCenable, CONDH_BL_Reg_Out, CLR, MEMWB_RD_Out, CLK, MUXIF_PC_Out, PCADDER_PC_4_Out, MUXWB_out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out);
+    fileregister File_register(RFILE_PA_Out, RFILE_PB_Out, RFILE_PC_Out, RFILE_ProgC_Out, MEMWB_RF_Enable_Out, HAZARD_PCenable, CONDH_BL_Reg_Out, MEMWB_RD_Out, MUXIF_PC_Out, PCADDER_PC_4_Out, MUXWB_out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, CLR, CLK);
     Mux_4_1 ID_mux_A(MUXPA_Out, RFILE_PA_Out, ALU_Out, MUX_data_mem_out, MUXWB_out, HAZARD_MUXPA_select);
     Mux_4_1 ID_mux_B(MUXPB_Out, RFILE_PB_Out, ALU_Out, MUX_data_mem_out, MUXWB_out, HAZARD_MUXPB_select);
     Mux_4_1 ID_mux_C(MUXPC_Out, RFILE_PC_Out, ALU_Out, MUX_data_mem_out, MUXWB_out, HAZARD_MUXPC_select);
@@ -227,8 +227,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     ALU ALUmodule(IDEX_RegFile_MuxPortA_Out, MUXALU_Out, SHIFTER_Carry_Out, IDEX_ALU_Op_Out, ALU_Out, ALU_Flags_Out);
     // INPUTS FIRST !!!
     Shifter Shiftermodule(IDEX_RegFile_MuxPortB_Out, IDEX_Shifter_Amount_Out, IDEX_SHIFTER_Type_Out, SHIFTER_Out, SHIFTER_Carry_Out);
-    // ADD CARRY OUT IN DIAGRAM AND REVISE :::::: a donde sale el carry? -n
-    FlagRegister Flagreg(FREG_Cond_Codes_Out, FREG_Carry_Out, ALU_Flags_Out, MUXCU_S_Out, CLK, CLR);
+    FlagRegister Flagreg(FREG_Cond_Codes_Out, ALU_Flags_Out, MUXCU_S_Out, CLK, CLR);
     FlagMux EX_mux_B(MUXFREG_Out, ALU_Flags_Out, FREG_Cond_Codes_Out, MUXCU_S_Out);
     ConditionTester Condtester(CTESTER_True_Out, IFID_Cond_Codes, MUXFREG_Out);
 

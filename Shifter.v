@@ -3,13 +3,13 @@
 *	Implementar con << , >>
 */
 
-module Shifter #(parameter N=32) (
-	input [N-1:0] Rm_in,
+module Shifter (
+	input [31:0] Rm_in,
 	input [11:0] shift_in,
 	input [2:0] type_in,
 
-	output reg [N-1:0] shifter_out, 
-	output reg shifter_carry_out
+	output reg [31:0] shifter_out, 
+	output reg shifter_carry_out		// ???
 	);
 
 	integer index = 0;

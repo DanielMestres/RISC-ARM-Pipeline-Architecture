@@ -1,8 +1,8 @@
 module SE_4 (
     output reg [23:0] Output,
-    input [23:0] in
+    input [23:0] Input
 );
-    always@ (in) begin
-        Output = in * 4; // * 4
+    always@ (Input) begin
+        Output = Input * 3'b100; // * 4
     end
 endmodule
