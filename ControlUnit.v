@@ -102,6 +102,7 @@ module Control_Unit (
             end
             3'b101:begin        // B/L
                 ID_B_instr = 1'b1;
+                ID_ALU_Op = 4'b0000;
                 mem_enable = 1'b0;
                 S = 1'b0; 
                 ID_shift_imm = 1'b0;  
