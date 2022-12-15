@@ -17,9 +17,9 @@ module Mux_CU (
     input S_i,
     input RF_i,
     input sel
-);
+    );
     always@ (Shift_i, ALU_i, size_i, enable_i, rw_i, load_i, S_i, RF_i, sel) begin
-        if(sel == 0) begin
+        if(sel == 1'b0) begin
             Shift_output = Shift_i;
             ALU_output = ALU_i;
             size_o = size_i;

@@ -15,12 +15,12 @@ module HazardUnit (
     input enable_RF_EX,
     input enable_RF_MEM,
     input enable_RF_WB
-);
+    );
 
-// RN y RM en ID es igual a RD en EX,MEM o RW, Data forward el RD a ID
-// En una intruccion de LOAD, si RN y RM en ID es igual a RD en EX, has un NOP. si es igual en MEM o WB, data forward RD a ID.
+    // RN y RM en ID es igual a RD en EX,MEM o RW, Data forward el RD a ID
+    // En una intruccion de LOAD, si RN y RM en ID es igual a RD en EX, has un NOP. si es igual en MEM o WB, data forward RD a ID.
 
-always@ (RW_EX, RW_MEM, RW_WB, RA_ID, RB_ID, RC_ID, enable_LD_EX, enable_RF_EX, enable_RF_MEM, enable_RF_WB) begin   // Fix clock posedge CLK synchronize 
+    always@ (RW_EX, RW_MEM, RW_WB, RA_ID, RB_ID, RC_ID, enable_LD_EX, enable_RF_EX, enable_RF_MEM, enable_RF_WB) begin   // Fix clock posedge CLK synchronize 
     ISA = 2'b00;
     ISB = 2'b00;
     ISD = 2'b00;
@@ -73,5 +73,5 @@ always@ (RW_EX, RW_MEM, RW_WB, RA_ID, RB_ID, RC_ID, enable_LD_EX, enable_RF_EX, 
             ISD = 2'b01;
         end
     end
-end
+    end
 endmodule

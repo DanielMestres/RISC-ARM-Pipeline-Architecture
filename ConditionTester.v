@@ -3,7 +3,7 @@ module ConditionTester (
     input [3:0] Code,   // Condition codes
     input [3:0] Flags   // Updated flags
     //Flags[3] = V | Flags[2] = C | Flags[1] = Z | Flags[0] = N
-);
+    );
     parameter EQ = 4'b0000;
     parameter NE = 4'b0001;
     parameter CS = 4'b0010; // HS

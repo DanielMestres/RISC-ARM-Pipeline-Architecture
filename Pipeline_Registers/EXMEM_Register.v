@@ -17,9 +17,10 @@ module EXMEM_Register (
     input [3:0] Rd_In,
     input CLK,
     input CLR
-);
+    );
 
-    always@(posedge CLK) begin
+
+    always@(posedge CLK,posedge CLR) begin
         if(CLR) begin
             Load_Out <= 1'b0;
             rf_Out <= 1'b0;

@@ -6,7 +6,7 @@ module Mux_4_1 (
     input [31:0] inputC,
     input [31:0] inputD,
     input [1:0] sel
-);
+    );
     always@ (inputA, inputB, inputC, inputD, sel) begin
         case(sel)
             2'b00: begin

@@ -1,4 +1,3 @@
-// Instruction Memory Module, ADD ENABLE ???
 module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address);        
    reg[7:0] Mem[0:255]; //256 8-byte addresses
     always @ (Address)  begin                
@@ -10,8 +9,6 @@ module inst_ram256x8(output reg[31:0] DataOut, input[31:0] Address);
         end                
     end
 endmodule                             
-
-
 // DATA MEMORY
 module data_ram256x8(output reg[31:0] DataOut, input Enable, RW, input[31:0] Address, input[31:0] DataIn, input [1:0] Size);
     reg[7:0] Mem[0:255]; // 256 8-byte addresses

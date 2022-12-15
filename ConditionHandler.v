@@ -4,7 +4,7 @@ module ConditionHandler (
     input B,                // receives branching permision from control unit
     input Cond_true,        // // receives if condition was succesful or not
     input BL
-);
+    );
 
     always@(B, Cond_true, BL) begin
         T_address = 1'b0;
@@ -15,5 +15,5 @@ module ConditionHandler (
                 BL_reg = 1'b1;
             end
         end
-end
+    end
 endmodule

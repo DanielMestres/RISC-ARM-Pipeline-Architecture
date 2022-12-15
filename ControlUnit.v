@@ -10,14 +10,14 @@ module Control_Unit (
     output reg ID_B_instr,
     output reg B_L,
     input [31:0] I
-);
+    );
     always@ (I) begin
         if(I == 32'b00000000000000000000000000000000) begin    // NOP
+            ID_shift_imm = 1'b0;
             S = 1'b0;
             ID_ALU_Op = 4'b0000;
             ID_RF_enable = 1'b0;
             ID_B_instr = 1'b0;
-            ID_shift_imm = 1'b0;
             mem_size = 2'b00;
             B_L = 1'b0; 
             mem_enable = 1'b0;
@@ -25,33 +25,33 @@ module Control_Unit (
             ID_Load_Inst = 1'b0;
         end else case(I[27:25])
             3'b000:begin        // Data Processing Imm Shift
-                S = I[20];
-                ID_ALU_Op = I[24:21];
-                ID_RF_enable = 1'b1;
-                ID_B_instr = 1'b0;
-                B_L = 1'b0;
-                ID_shift_imm = 1'b1;
-                mem_size = 2'b00;
-                mem_enable = 1'b0;
-                mem_RW = 1'b0;
-                ID_Load_Inst = 1'b0;
-            end
+                    ID_shift_imm = 1'b1;
+                    S = I[20];
+                    ID_ALU_Op = I[24:21];
+                    ID_RF_enable = 1'b1;
+                    ID_B_instr = 1'b0;
+                    B_L = 1'b0;
+                    mem_size = 2'b00;
+                    mem_enable = 1'b0;
+                    mem_RW = 1'b0;
+                    ID_Load_Inst = 1'b0;
+                end
             3'b001:begin        // Data Processing Imm
-                S = I[20];
-                ID_ALU_Op = I[24:21]; 
-                ID_RF_enable = 1'b1; 
-                ID_B_instr = 1'b0;
-                B_L = 1'b0;
-                ID_shift_imm = 1'b0;
-                mem_size = 2'b00;
-                mem_enable = 1'b0;
-                mem_RW = 1'b0;
-                ID_Load_Inst = 1'b0;
-            end
+                    ID_shift_imm = 1'b1;
+                    S = I[20];
+                    ID_ALU_Op = I[24:21]; 
+                    ID_RF_enable = 1'b1; 
+                    ID_B_instr = 1'b0;
+                    B_L = 1'b0;
+                    mem_size = 2'b00;
+                    mem_enable = 1'b0;
+                    mem_RW = 1'b0;
+                    ID_Load_Inst = 1'b0;
+                end
             3'b010:begin        // Load Store imm offset
                 S = 1'b0;
-                ID_shift_imm = 1'b0; 
                 ID_Load_Inst = I[20]; 
+                ID_shift_imm = 1'b1;
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
                 mem_enable = 1'b1;
@@ -75,9 +75,9 @@ module Control_Unit (
             end
             3'b011:begin        // Load Store reg offset
                 S = 1'b0;
+                ID_shift_imm = 1'b1; 
                 ID_Load_Inst = I[20];
                 mem_size = I[22:21];
-                ID_shift_imm = 1'b0; 
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
                 mem_enable = 1'b1;
@@ -101,24 +101,24 @@ module Control_Unit (
                 end
             end
             3'b101:begin        // B/L
-                ID_B_instr = 1'b1;
-                ID_ALU_Op = 4'b0000;
-                mem_enable = 1'b0;
-                S = 1'b0; 
-                ID_shift_imm = 1'b0;  
-                ID_Load_Inst = 1'b0;  
-                ID_RF_enable = 1'b0;
-                mem_RW = 1'b0;
-                mem_size = 2'b00;                 
-                // Branch
-                if(I[24] == 1'b0) begin // ???
-                    B_L = 1'b0;
-                end 
-                else begin 
-                    // Link 
-                    B_L = 1'b1;
+                    ID_shift_imm = 1'b0;
+                    ID_B_instr = 1'b1;
+                    mem_enable = 1'b0;
+                    S = 1'b0;  
+                    ID_Load_Inst = 1'b0;  
+                    ID_RF_enable = 1'b0;
+                    mem_RW = 1'b0;
+                    mem_size = 2'b00;  
+                    ID_ALU_Op = 4'b0000;               
+                    // Branch
+                    if(I[24] == 1'b0) begin // ???
+                        B_L = 1'b0;
+                    end 
+                    else begin 
+                        // Link 
+                        B_L = 1'b1;
+                    end
                 end
-            end
         endcase
     end
 endmodule

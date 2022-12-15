@@ -29,9 +29,9 @@ module IDEX_Register (
     input [3:0] Rd_In,
     input CLK,
     input CLR
-);
+    );
 
-always@(posedge CLK) begin
+    always@(posedge CLK,posedge CLR) begin
         if(CLR) begin
             Shift_Out <= 1'b0;
             ALU_Out <= 4'b0000;
@@ -43,7 +43,7 @@ always@(posedge CLK) begin
             rw_Out <= 1'b0;
             RegFile_MuxPortC_Out <= 32'b00000000000000000000000000000000;
             RegFile_MuxPortB_Out <= 32'b00000000000000000000000000000000;
-            Shifter_Type_Out <= 3'b000;
+            Shifter_Type_Out <= 3'b000; 
             RegFile_MuxPortA_Out <= 32'b00000000000000000000000000000000;
             Shifter_Amount_Out <= 12'b000000000000;
             Rd_Out <= 4'b0000;
@@ -58,7 +58,7 @@ always@(posedge CLK) begin
             rw_Out <= rw_In;
             RegFile_MuxPortC_Out <= RegFile_MuxPortC_In;
             RegFile_MuxPortB_Out <= RegFile_MuxPortB_In;
-            Shifter_Type_Out <= Shifter_Type_In;
+            Shifter_Type_Out <= Shifter_Type_In; 
             RegFile_MuxPortA_Out <= RegFile_MuxPortA_In;
             Shifter_Amount_Out <= Shifter_Amount_In;
             Rd_Out <= Rd_In;

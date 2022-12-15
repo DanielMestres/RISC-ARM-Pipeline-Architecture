@@ -4,10 +4,11 @@ module FlagRegister(
     input S_in,
     input CLK,
     input CLR
-);
+    );
 	always@(posedge CLK)
     begin
-        if(CLR) begin
+        if(CLR)
+        begin
             CC_out = 4'b0000;
         end
         else if(S_in)

@@ -7,7 +7,6 @@
 // Control Unit
 `include "ControlUnit.v"
 `include "Support/Mux_CU.v"
-`include "Support/Or_Nor.v"
 
 // IF / ID Phase
 `include "Support/PC_4_Adder.v"
@@ -26,6 +25,7 @@
 
 // Support Modules
 `include "Support/Or.v"
+`include "Support/Or_Nor.v"
 `include "Support/Mux.v"
 `include "Support/FlagMux.v"
 `include "HazardUnit.v"
@@ -43,11 +43,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     wire [3:0] IFID_Rd_Out;
     wire [11:0] IFID_Shift_Amount_Out;
     wire [3:0] IFID_Cond_Codes;
-
-    // FIX DIAGRAM
-    wire [2:0] IFID_Shifter_Type_Out;
-
-    wire LE_Out;
+    wire [2:0] IFID_SHIFTER_Type_Out;
 
     // IDEX Register
     wire IDEX_Imm_Shift_Out;
@@ -55,10 +51,8 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     wire [1:0] IDEX_Mem_Size_Out;
     wire IDEX_Mem_Enable_Out;
     wire IDEX_Mem_RW_Out;
+    wire IDEX_S_Out; 
     wire IDEX_Load_Instr_Out;
-
-    // FIX DIAGRAM
-    wire IDEX_S_Enable_Out;
     wire IDEX_RF_Enable_Out;
     wire [31:0] IDEX_RegFile_MuxPortC_Out;
     wire [31:0] IDEX_RegFile_MuxPortB_Out;
@@ -196,11 +190,10 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     reg CLR;
 
 /*--------------INST. MODULES-----------*/
-// Outputs, Inputs
-
 /*              Pipeline Reg            */
-    IFID_Register IFIDregister(IFID_Inst_Out, IFID_PC4_Out, IFID_Offset_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IFID_Shift_Amount_Out, IFID_Cond_Codes, IFID_Shifter_Type_Out, INRAM_Inst_Out, PCADDER_PC_4_Out, LE_Out, CLK, ORIF_Reset_Out);
-    IDEX_Register IDEXregister(IDEX_Imm_Shift_Out, IDEX_ALU_Op_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_S_Enable_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, IDEX_RegFile_MuxPortB_Out, IDEX_SHIFTER_Type_Out, IDEX_RegFile_MuxPortA_Out, IDEX_Shifter_Amount_Out, IDEX_Rd_Out, MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, MUXPC_Out, MUXPB_Out, IFID_Shifter_Type_Out, MUXPA_Out, IFID_Shift_Amount_Out, IFID_Rd_Out, CLK, CLR);
+
+    IFID_Register IFIDregister(IFID_Inst_Out, IFID_PC4_Out, IFID_Offset_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IFID_Shift_Amount_Out, IFID_Cond_Codes,IFID_SHIFTER_Type_Out, INRAM_Inst_Out, PCADDER_PC_4_Out,HAZARD_LE_IfId, CLK, ORIF_Reset_Out);
+    IDEX_Register IDEXregister(IDEX_Imm_Shift_Out, IDEX_ALU_Op_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out,IDEX_S_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, IDEX_RegFile_MuxPortB_Out, IDEX_SHIFTER_Type_Out, IDEX_RegFile_MuxPortA_Out, IDEX_Shifter_Amount_Out, IDEX_Rd_Out, MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out,MUXCU_S_Out, MUXCU_RF_Enable_Out, MUXPC_Out, MUXPB_Out,IFID_SHIFTER_Type_Out, MUXPA_Out, IFID_Shift_Amount_Out, IFID_Rd_Out,CLK, CLR);
     EXMEM_Register EXMEMregister(EXMEM_Mem_Size_Out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, EXMEM_RegFile_PortC_Out, EXMEM_Alu_Out, EXMEM_Rd_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, ALU_Out, IDEX_Rd_Out, CLK, CLR);
     MEMWB_Register MEMWBregister(MEMWB_Load_Instr_Out, MEMWB_RF_Enable_Out, MEMWB_DATA_MEM_Out, MEMWB_ALU_MUX_Out, MEMWB_RD_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, DATA_Mem_out, EXMEM_Alu_Out, EXMEM_Rd_Out, CLK, CLR);
 
@@ -208,13 +201,12 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     Control_Unit CU(CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, IFID_Inst_Out);
     Or_Nor CU_or(ORCU_Out, HAZARD_NOP_insertion_select, CTESTER_True_Out);
     // REVISE SELECT edit: creo que esta bien? (-nata)
-    Mux_CU CU_mux(MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, ORCU_Out);
+    Mux_CU CU_mux(MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out,CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, ORCU_Out);
     HazardUnit Hazardunit(HAZARD_MUXPA_select, HAZARD_MUXPB_select, HAZARD_MUXPC_select, HAZARD_NOP_insertion_select, HAZARD_PCenable, HAZARD_LE_IfId, IDEX_Rd_Out, EXMEM_Rd_Out, MEMWB_RD_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, EXMEM_RF_Enable_Out, MEMWB_RF_Enable_Out);
 
 /*              IF STAGE                */
     // Inst RAM
     inst_ram256x8 instRam(INRAM_Inst_Out, RFILE_ProgC_Out);
-
     Mux IF_mux(MUXIF_PC_Out, ID_Adder_Offset_Out, PCADDER_PC_4_Out, CONDH_T_Addr_Out);
     PC_4_Adder PC_adder(PCADDER_PC_4_Out, RFILE_ProgC_Out);
     Or IF_or(ORIF_Reset_Out, CONDH_T_Addr_Out, CLR);
@@ -229,15 +221,15 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 
 /*              EX STAGE                */
     ConditionHandler Condhandler(CONDH_T_Addr_Out, CONDH_BL_Reg_Out, CU_ID_B_Instr_Out, CTESTER_True_Out, CU_ID_BL_Instr_Out);
+   
     Mux EX_mux_A(MUXALU_Out, SHIFTER_Out, IDEX_RegFile_MuxPortB_Out, IDEX_Imm_Shift_Out); // ALU B INPUT MUX
     // INPUTS FIRST !!!
     ALU ALUmodule(IDEX_RegFile_MuxPortA_Out, MUXALU_Out, SHIFTER_Carry_Out, IDEX_ALU_Op_Out, ALU_Out, ALU_Flags_Out);
     // INPUTS FIRST !!!
     Shifter Shiftermodule(IDEX_RegFile_MuxPortB_Out, IDEX_Shifter_Amount_Out, IDEX_SHIFTER_Type_Out, SHIFTER_Out, SHIFTER_Carry_Out);
-    FlagRegister Flagreg(FREG_Cond_Codes_Out, ALU_Flags_Out, IDEX_S_Enable_Out, CLK, CLR);
-    FlagMux EX_mux_B(MUXFREG_Out, ALU_Flags_Out, FREG_Cond_Codes_Out, IDEX_S_Enable_Out);
+    FlagRegister Flagreg(FREG_Cond_Codes_Out, ALU_Flags_Out, IDEX_S_Out, CLK, CLR);
+    FlagMux EX_mux_B(MUXFREG_Out, ALU_Flags_Out, FREG_Cond_Codes_Out, IDEX_S_Out);
     ConditionTester Condtester(CTESTER_True_Out, IFID_Cond_Codes, MUXFREG_Out);
-
 /*              MEM STAGE               */
     // Instantiate and precharge instruction RAM
     data_ram256x8 dataRam(DATA_Mem_out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Alu_Out, EXMEM_RegFile_PortC_Out, EXMEM_Mem_Size_Out);
@@ -278,7 +270,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
         CLK = 1'b1;
         CLR = 1'b0;
         #1 CLR = ~CLR;
-        repeat(PROGRAM_SIZE) begin
+        repeat(20) begin
         #5;
         CLR = 1'b0;
         CLK = ~CLK;
@@ -289,8 +281,9 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     // Display & Monitor
     initial begin
         #5;
-        $display("\n    Phase 4 Simulation");
-        $display("         PC IFID_IN                           IFID_OUT                           Data_Mem_Addr_In R1 R2 R3 R5");
-        $monitor("%d  %b  %b", RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out);
+        //$display("\n    Phase 4 Simulation");
+        $display("         PC IFID_IN          Control signals: shift Op   size mem_en mem_rw Load S RF B BL");
+        //$monitor("%d  %b  %b", RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out);
+        $monitor("%d  %b  %b     %b %b   %b      %b      %b    %b %b  %b %b", RFILE_ProgC_Out, INRAM_Inst_Out,CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out );
     end
 endmodule
