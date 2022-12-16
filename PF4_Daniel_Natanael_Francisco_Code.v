@@ -286,8 +286,13 @@ module Phase_4 #( parameter PROGRAM_SIZE=12 );
     initial begin
         #5;
         //$display("\n    Phase 4 Simulation");
-        $display("         PC IFID_IN          Control signals: shift Op   size mem_en mem_rw Load S RF B BL  Registers: R1         R2         R3         R5      DATA_MEM_ADDR_IN");
-        //$monitor("%d  %b  %b", RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out);
-        $monitor("%d  %b  %b     %b %b   %b      %b      %b    %b %b  %b %b      %d %d %d %d            %d", RFILE_ProgC_Out, INRAM_Inst_Out,CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, RFILE_R1_Out, RFILE_R2_Out, RFILE_R3_Out, RFILE_R5_Out, EXMEM_Alu_Out );
+        // $display("         PC IFID_IN          Control signals: shift Op   size mem_en mem_rw Load S RF B BL  Registers: R1         R2         R3         R5      DATA_MEM_ADDR_IN");
+        // //$monitor("%d  %b  %b", RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out);
+        // $monitor("%d  %b  %b     %b %b   %b      %b      %b    %b %b  %b %b      %d %d %d %d            %d", RFILE_ProgC_Out, INRAM_Inst_Out,CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, RFILE_R1_Out, RFILE_R2_Out, RFILE_R3_Out, RFILE_R5_Out, EXMEM_Alu_Out );
+
+        // CU Signals in each phase
+        $display ("\n      PC     IFID_IN                           IFID_OUT                          C_U_OUT SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF B B_L IDEX SHIFT OPCODE SIZE EN_MEM R/W LOAD S RF EXMEM SIZE EN_MEM RW LOAD RF MEMWB LOAD RF");
+        $monitor("%d   %b  %b        | %b     %b   %b    %b     %b   %b    %b %b  %b  %b     | %b     %b   %b    %b      %b   %b   %b %b      | %b    %b      %b  %b    %b     | %b    %b", 
+                RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out,CU_ID_Shift_Imm_Out,CU_ID_ALU_Op_Out,CU_Mem_Size_Out,CU_Mem_Enable_Out,CU_Mem_RW_Out,CU_ID_Load_Instr_Out,CU_S_Enable_Out,CU_ID_RF_Enable_Out,CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, IDEX_Imm_Shift_Out,IDEX_ALU_Op_Out,IDEX_Mem_Size_Out,IDEX_Mem_Enable_Out,IDEX_Mem_RW_Out,IDEX_Load_Instr_Out,IDEX_S_Out,IDEX_RF_Enable_Out, EXMEM_Mem_Size_Out,EXMEM_Mem_Enable_Out,EXMEM_Mem_RW_Out,EXMEM_Load_Instr_Out,EXMEM_RF_Enable_Out, MEMWB_Load_Instr_Out,MEMWB_RF_Enable_Out);
     end
 endmodule
