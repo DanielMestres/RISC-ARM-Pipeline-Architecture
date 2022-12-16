@@ -17,7 +17,7 @@ module IFID_Register (
 
 
     always@ (posedge CLK) begin
-        if(CLR || (LE==0)) begin
+        if(CLR) begin
             IFID_Out <= 32'b00000000000000000000000000000000;
             PC4_Out <= 32'b00000000000000000000000000000000;
             Offset_Out <= 24'b000000000000000000000000;
@@ -25,10 +25,9 @@ module IFID_Register (
             Rm_Out <= 4'b0000;
             Rd_Out <= 4'b0000;
             Shift_Amount_Out <= 12'b000000000000;
-            Cond_Codes <= 4'b0000;
+            Cond_Codes <= 4'b1110;
             Shifter_Type_Out <= 3'b000; 
-        end
-        else begin
+        end else if(LE) begin
             IFID_Out <= IFID_In;
             PC4_Out <= PC4_In;
             Offset_Out <= IFID_In[23:0];

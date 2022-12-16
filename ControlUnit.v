@@ -55,7 +55,7 @@ module Control_Unit (
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
                 mem_enable = 1'b1;
-                mem_size = I[22:21];    // ???
+                mem_size = I[22];    // ???
                 // Store
                 if(I[20] == 1'b0) begin 
                     ID_RF_enable = 1'b0;
@@ -77,7 +77,7 @@ module Control_Unit (
                 S = 1'b0;
                 ID_shift_imm = 1'b1; 
                 ID_Load_Inst = I[20];
-                mem_size = I[22:21];
+                mem_size = I[22];
                 ID_B_instr = 1'b0;
                 B_L = 1'b0;
                 mem_enable = 1'b1;
