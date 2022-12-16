@@ -30,7 +30,7 @@
 `include "Support/FlagMux.v"
 `include "HazardUnit.v"
 
-module Phase_4 #( parameter PROGRAM_SIZE=9 );
+module Phase_4 #( parameter PROGRAM_SIZE=12 );
 /*--------------In's / Out's------------*/
 
 /*              Pipeline Reg's          */
@@ -133,7 +133,11 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     wire [31:0] RFILE_PB_Out;
     wire [31:0] RFILE_PC_Out;
     wire [31:0] RFILE_ProgC_Out;
-    // reg LE = 1'b1; ???
+
+    wire [31:0] RFILE_R1_Out;
+    wire [31:0] RFILE_R2_Out;
+    wire [31:0] RFILE_R3_Out;
+    wire [31:0] RFILE_R5_Out;
 
     // SE_4
     wire [23:0] SE4_Out;
@@ -214,7 +218,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*              ID STAGE                */
     SE_4 se_4(SE4_Out, IFID_Offset_Out);
     Adder_Target_Addr ID_adder(ID_Adder_Offset_Out, SE4_Out, IFID_PC4_Out);
-    fileregister File_register(RFILE_PA_Out, RFILE_PB_Out, RFILE_PC_Out, RFILE_ProgC_Out, MEMWB_RF_Enable_Out, HAZARD_PCenable, CONDH_BL_Reg_Out, MEMWB_RD_Out, MUXIF_PC_Out, PCADDER_PC_4_Out, MUXWB_out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, CLR, CLK);
+    fileregister File_register(RFILE_PA_Out, RFILE_PB_Out, RFILE_PC_Out, RFILE_ProgC_Out, RFILE_R1_Out, RFILE_R2_Out, RFILE_R3_Out, RFILE_R5_Out, MEMWB_RF_Enable_Out, HAZARD_PCenable, CONDH_BL_Reg_Out, MEMWB_RD_Out, MUXIF_PC_Out, PCADDER_PC_4_Out, MUXWB_out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, CLR, CLK);
     Mux_4_1 ID_mux_A(MUXPA_Out, RFILE_PA_Out, ALU_Out, MUX_data_mem_out, MUXWB_out, HAZARD_MUXPA_select);
     Mux_4_1 ID_mux_B(MUXPB_Out, RFILE_PB_Out, ALU_Out, MUX_data_mem_out, MUXWB_out, HAZARD_MUXPB_select);
     Mux_4_1 ID_mux_C(MUXPC_Out, RFILE_PC_Out, ALU_Out, MUX_data_mem_out, MUXWB_out, HAZARD_MUXPC_select);
@@ -241,7 +245,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 /*--------------TESTING-----------------*/
     // Precharge inst RAM
     initial begin
-        fi = $fopen("memory/testcode_0.txt","r");          // Input file
+        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fi)) begin 
                 Instcode = $fscanf(fi, "%b", data);
@@ -254,7 +258,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
 
     // Precharge data RAM
     initial begin
-        fm = $fopen("memory/testcode_0.txt","r");          // Input file
+        fm = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fm)) begin 
                 Datacode = $fscanf(fm, "%b", data);
@@ -270,7 +274,7 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
         CLK = 1'b1;
         CLR = 1'b0;
         #1 CLR = ~CLR;
-        repeat(20) begin
+        repeat(PROGRAM_SIZE) begin
         #5;
         CLR = 1'b0;
         CLK = ~CLK;
@@ -282,8 +286,8 @@ module Phase_4 #( parameter PROGRAM_SIZE=9 );
     initial begin
         #5;
         //$display("\n    Phase 4 Simulation");
-        $display("         PC IFID_IN          Control signals: shift Op   size mem_en mem_rw Load S RF B BL");
+        $display("         PC IFID_IN          Control signals: shift Op   size mem_en mem_rw Load S RF B BL  Registers: R1         R2         R3         R5      DATA_MEM_ADDR_IN");
         //$monitor("%d  %b  %b", RFILE_ProgC_Out, INRAM_Inst_Out, IFID_Inst_Out);
-        $monitor("%d  %b  %b     %b %b   %b      %b      %b    %b %b  %b %b", RFILE_ProgC_Out, INRAM_Inst_Out,CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out );
+        $monitor("%d  %b  %b     %b %b   %b      %b      %b    %b %b  %b %b      %d %d %d %d            %d", RFILE_ProgC_Out, INRAM_Inst_Out,CU_ID_Shift_Imm_Out, CU_ID_ALU_Op_Out, CU_Mem_Size_Out, CU_Mem_Enable_Out, CU_Mem_RW_Out, CU_ID_Load_Instr_Out, CU_S_Enable_Out, CU_ID_RF_Enable_Out, CU_ID_B_Instr_Out, CU_ID_BL_Instr_Out, RFILE_R1_Out, RFILE_R2_Out, RFILE_R3_Out, RFILE_R5_Out, EXMEM_Alu_Out );
     end
 endmodule

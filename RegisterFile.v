@@ -156,6 +156,10 @@ module fileregister (
     output     [31:0]Y2,                // PB
     output     [31:0]Y3,                // PC
     output     [31:0]PCout,             //*********Dedicated output for R15
+    output     [31:0]R1_out,
+    output     [31:0]R2_out,
+    output     [31:0]R3_out,
+    output     [31:0]R5_out,
 
     input       Ld,                     //the ld for the binary decoder (rf enable)
     input       PCE,                    //PC enable **********
@@ -198,8 +202,10 @@ module fileregister (
 
     
     assign PCout=Q15;
-    
-
+    assign R1_out=Q1;
+    assign R2_out=Q2;
+    assign R3_out=Q3;
+    assign R5_out=Q5;
 endmodule
 
 
