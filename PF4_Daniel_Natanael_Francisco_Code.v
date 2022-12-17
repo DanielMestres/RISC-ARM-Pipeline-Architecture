@@ -239,7 +239,7 @@ module Phase_4;
 /*--------------TESTING-----------------*/
     // Precharge inst RAM
     initial begin
-        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
+        fi = $fopen("memory/testcode_arm_ppu_2.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fi)) begin 
                 Instcode = $fscanf(fi, "%b", data);
@@ -252,7 +252,7 @@ module Phase_4;
 
     // Precharge data RAM
     initial begin
-        fm = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
+        fm = $fopen("memory/testcode_arm_ppu_2.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fm)) begin 
                 Datacode = $fscanf(fm, "%b", data);
@@ -292,7 +292,7 @@ module Phase_4;
     /// Do a data dump at the end of simulation
     initial begin
         #400 begin 
-            addr =  0; 
+            addr =  188; 
             repeat(12) begin
                 $display("%b %b %b %b Address = %d",dataRam.Mem[addr], dataRam.Mem[addr+1], dataRam.Mem[addr+2], dataRam.Mem[addr+3],addr);
                 addr = addr + 4;
