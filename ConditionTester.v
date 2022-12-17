@@ -4,21 +4,21 @@ module ConditionTester (
     input [3:0] Flags   // Updated flags
     //Flags[3] = V | Flags[2] = C | Flags[1] = Z | Flags[0] = N
     );
-    parameter EQ = 4'b0000;
-    parameter NE = 4'b0001;
-    parameter CS = 4'b0010; // HS
-    parameter CC = 4'b0011; // LO
-    parameter MI = 4'b0100;
-    parameter PL = 4'b0101;
-    parameter VS = 4'b0110;
-    parameter VC = 4'b0111;
-    parameter HI = 4'b1000;
-    parameter LS = 4'b1001;
-    parameter GE = 4'b1010;
-    parameter LT = 4'b1011;
-    parameter GT = 4'b1100;
-    parameter LE = 4'b1101;
-    parameter AL = 4'b1110;
+        parameter EQ = 4'b0000;
+        parameter NE = 4'b0001;
+        parameter CS = 4'b0010; // HS
+        parameter CC = 4'b0011; // LO
+        parameter MI = 4'b0100;
+        parameter PL = 4'b0101;
+        parameter VS = 4'b0110;
+        parameter VC = 4'b0111;
+        parameter HI = 4'b1000;
+        parameter LS = 4'b1001;
+        parameter GE = 4'b1010;
+        parameter LT = 4'b1011;
+        parameter GT = 4'b1100;
+        parameter LE = 4'b1101;
+        parameter AL = 4'b1110;
 
     always@(Code, Flags) begin
         Cond = 0;

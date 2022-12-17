@@ -8,7 +8,7 @@
 `include "ControlUnit.v"
 `include "Support/Mux_CU.v"
 
-// IF / ID Phase
+// IFID Phase
 `include "Support/PC_4_Adder.v"
 `include "memory/ram.v"         // Contains both inst and data mem modules
 `include "RegisterFile.v"
@@ -16,7 +16,7 @@
 `include "Support/Adder_Target_Addr.v"
 `include "Support/SE_4.v"
 
-// ID / EX Phase
+// IDEX Phase
 `include "ConditionHandler.v"
 `include "ALU.v"
 `include "Shifter.v"
@@ -190,7 +190,6 @@ module Phase_4;
 
 /*--------------INST. MODULES-----------*/
 /*              Pipeline Reg            */
-
     IFID_Register IFIDregister(IFID_Inst_Out, IFID_PC4_Out, IFID_Offset_Out, IFID_Rn_Out, IFID_Rm_Out, IFID_Rd_Out, IFID_Shift_Amount_Out, IFID_Cond_Codes,IFID_SHIFTER_Type_Out, INRAM_Inst_Out, PCADDER_PC_4_Out,HAZARD_LE_IfId, CLK, ORIF_Reset_Out);
     IDEX_Register IDEXregister(IDEX_Imm_Shift_Out, IDEX_ALU_Op_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out,IDEX_S_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, IDEX_RegFile_MuxPortB_Out, IDEX_SHIFTER_Type_Out, IDEX_RegFile_MuxPortA_Out, IDEX_Shifter_Amount_Out, IDEX_Rd_Out, MUXCU_Shift_Imm_Out, MUXCU_ALU_Op_Out, MUXCU_Size_Out, MUXCU_Mem_Enable_Out, MUXCU_Mem_RW_Out, MUXCU_Load_Inst_Out, MUXCU_S_Out, MUXCU_RF_Enable_Out, MUXPC_Out, MUXPB_Out,IFID_SHIFTER_Type_Out, MUXPA_Out, IFID_Shift_Amount_Out, IFID_Rd_Out,CLK, CLR);
     EXMEM_Register EXMEMregister(EXMEM_Mem_Size_Out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Load_Instr_Out, EXMEM_RF_Enable_Out, EXMEM_RegFile_PortC_Out, EXMEM_Alu_Out, EXMEM_Rd_Out, IDEX_Mem_Size_Out, IDEX_Mem_Enable_Out, IDEX_Mem_RW_Out, IDEX_Load_Instr_Out, IDEX_RF_Enable_Out, IDEX_RegFile_MuxPortC_Out, ALU_Out, IDEX_Rd_Out, CLK, CLR);
@@ -222,15 +221,15 @@ module Phase_4;
     
     // BORRAR!!!
     Mux EX_mux_A(MUXALU_Out, SHIFTER_Out, IDEX_RegFile_MuxPortB_Out, IDEX_Imm_Shift_Out); // ALU B INPUT MUX
-    // INPUTS FIRST !!!                                     // fix diagram
+    // INPUTS FIRST !!!
     ALU ALUmodule(IDEX_RegFile_MuxPortA_Out, MUXALU_Out, FREG_Cond_Codes_Out[2], IDEX_ALU_Op_Out, ALU_Out, ALU_Flags_Out);
     // INPUTS FIRST !!!         SHIFTER_Carry_Out NOT USED
     Shifter Shiftermodule(IDEX_RegFile_MuxPortB_Out, IDEX_Shifter_Amount_Out, IDEX_SHIFTER_Type_Out, SHIFTER_Out, SHIFTER_Carry_Out);
     FlagRegister Flagreg(FREG_Cond_Codes_Out, ALU_Flags_Out, IDEX_S_Out, CLK, CLR);
     FlagMux EX_mux_B(MUXFREG_Out, ALU_Flags_Out, FREG_Cond_Codes_Out, IDEX_S_Out);
     ConditionTester Condtester(CTESTER_True_Out, IFID_Cond_Codes, MUXFREG_Out);
+
 /*              MEM STAGE               */
-    // Instantiate and precharge instruction RAM
     data_ram256x8 dataRam(DATA_Mem_out, EXMEM_Mem_Enable_Out, EXMEM_Mem_RW_Out, EXMEM_Alu_Out, EXMEM_RegFile_PortC_Out, EXMEM_Mem_Size_Out);
     Mux MEM_mux(MUX_data_mem_out, DATA_Mem_out, EXMEM_Alu_Out, EXMEM_Load_Instr_Out);
 
@@ -295,8 +294,8 @@ module Phase_4;
         #400 begin 
             addr =  0; 
             repeat(12) begin
-            $display("%b %b %b %b Address = %d",dataRam.Mem[addr], dataRam.Mem[addr+1], dataRam.Mem[addr+2], dataRam.Mem[addr+3],addr);
-            addr = addr + 4;
+                $display("%b %b %b %b Address = %d",dataRam.Mem[addr], dataRam.Mem[addr+1], dataRam.Mem[addr+2], dataRam.Mem[addr+3],addr);
+                addr = addr + 4;
             end
             $finish;
         end
