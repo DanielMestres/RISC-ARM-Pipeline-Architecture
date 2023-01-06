@@ -218,8 +218,6 @@ module Phase_4;
 
 /*              EX STAGE                */
     ConditionHandler Condhandler(CONDH_T_Addr_Out, CONDH_BL_Reg_Out, CU_ID_B_Instr_Out, CTESTER_True_Out, CU_ID_BL_Instr_Out);
-    
-    // BORRAR!!!
     Mux EX_mux_A(MUXALU_Out, SHIFTER_Out, IDEX_RegFile_MuxPortB_Out, IDEX_Imm_Shift_Out); // ALU B INPUT MUX
     // INPUTS FIRST !!!
     ALU ALUmodule(IDEX_RegFile_MuxPortA_Out, MUXALU_Out, FREG_Cond_Codes_Out[2], IDEX_ALU_Op_Out, ALU_Out, ALU_Flags_Out);
@@ -239,7 +237,7 @@ module Phase_4;
 /*--------------TESTING-----------------*/
     // Precharge inst RAM
     initial begin
-        fi = $fopen("memory/testcode_arm_ppu_2.txt","r");          // Input file
+        fi = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fi)) begin 
                 Instcode = $fscanf(fi, "%b", data);
@@ -252,7 +250,7 @@ module Phase_4;
 
     // Precharge data RAM
     initial begin
-        fm = $fopen("memory/testcode_arm_ppu_2.txt","r");          // Input file
+        fm = $fopen("memory/testcode_arm_ppu_1.txt","r");          // Input file
         addr = 32'b00000000000000000000000000000000;
             while (!$feof(fm)) begin 
                 Datacode = $fscanf(fm, "%b", data);
@@ -292,7 +290,7 @@ module Phase_4;
     /// Do a data dump at the end of simulation
     initial begin
         #400 begin 
-            addr =  188; 
+            addr =  0; 
             repeat(12) begin
                 $display("%b %b %b %b Address = %d",dataRam.Mem[addr], dataRam.Mem[addr+1], dataRam.Mem[addr+2], dataRam.Mem[addr+3],addr);
                 addr = addr + 4;
