@@ -1,5 +1,0 @@
-module MUX_2x1 (output reg [31:0] Y, input [31:0] A, B, input S);
-always @ (A, B, S)
-	if (S) Y = B;
-	else Y = A;
-endmodule

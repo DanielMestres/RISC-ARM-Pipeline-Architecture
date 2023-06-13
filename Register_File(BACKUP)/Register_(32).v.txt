@@ -1,4 +1,0 @@
-module Register_32 (output reg [31:0] Q, input [31:0] D, input Ld, Clk);
-	always @ (posedge Clk)
-	if (Ld) Q <= D;
-endmodule

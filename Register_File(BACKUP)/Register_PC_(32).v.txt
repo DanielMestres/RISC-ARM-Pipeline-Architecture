@@ -1,4 +1,0 @@
-module Register_PC (output reg [31:0] PC_out, input [31:0] PC_in, input PC_en, Clk);
-	always @ (posedge Clk)
-	if(PC_en) PC_out <= PC_in;
-endmodule

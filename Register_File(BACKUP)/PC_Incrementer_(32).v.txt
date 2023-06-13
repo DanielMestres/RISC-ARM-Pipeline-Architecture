@@ -1,4 +1,0 @@
-module PC_Incrementer_32 (output reg [31:0] PC_4, input [31:0] PC_out);
-	always @ (PC_out)
-	PC_4 <= PC_out + 32'b00000000000000000000000000000100;
-endmodule
